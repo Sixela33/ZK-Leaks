@@ -1,2 +1,2 @@
 # midnight-starter-template
-TODO
+First comit is to confirm is communication is ok, reconfir
