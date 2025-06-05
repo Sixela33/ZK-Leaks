@@ -85,7 +85,52 @@ export const deploy = async (
 export const increment = async (counterContract: DeployedCounterContract): Promise<FinalizedTxData> => {
   logger.info('Incrementing...');
   const finalizedTxData = await counterContract.callTx.increment();
-  logger.info(`Transaction ${finalizedTxData.public.txId} added in block ${finalizedTxData.public.blockHeight}`);
+  logger.info({
+    section: 'General Section',
+    tx: finalizedTxData.public.tx,
+    txHash: finalizedTxData.public.txHash,
+    txId: finalizedTxData.public.txId,
+    blockHeight: finalizedTxData.public.blockHeight,
+    blockHash: finalizedTxData.public.blockHash,
+    nextContractState: finalizedTxData.public.nextContractState,
+    publicTranscript: finalizedTxData.public.publicTranscript,
+    status: finalizedTxData.public.status,
+  });
+
+  logger.info({
+    section: 'Guaranteed-Effects',
+    claimedContractCalls: finalizedTxData.public.partitionedTranscript[0]?.effects.claimedContractCalls,
+    claimedNullifiers: finalizedTxData.public.partitionedTranscript[0]?.effects.claimedNullifiers,
+    claimedReceives: finalizedTxData.public.partitionedTranscript[0]?.effects.claimedReceives,
+    claimedSpends: finalizedTxData.public.partitionedTranscript[0]?.effects.claimedSpends,
+    mints: finalizedTxData.public.partitionedTranscript[0]?.effects.mints,
+    gas: finalizedTxData.public.partitionedTranscript[0]?.gas,
+    program: finalizedTxData.public.partitionedTranscript[0]?.program,
+  });
+
+  logger.info({
+    section: 'Fallible-Effects',
+    claimedContractCalls: finalizedTxData.public.partitionedTranscript[1]?.effects.claimedContractCalls,
+    claimedNullifiers: finalizedTxData.public.partitionedTranscript[1]?.effects.claimedNullifiers,
+    claimedReceives: finalizedTxData.public.partitionedTranscript[1]?.effects.claimedReceives,
+    claimedSpends: finalizedTxData.public.partitionedTranscript[1]?.effects.claimedSpends,
+    mints: finalizedTxData.public.partitionedTranscript[1]?.effects.mints,
+    gas: finalizedTxData.public.partitionedTranscript[1]?.gas,
+    program: finalizedTxData.public.partitionedTranscript[1]?.program,
+  });
+
+  logger.info({
+    section: 'Private Section',
+    Inputs: finalizedTxData.private.input,
+    newCoins: finalizedTxData.private.newCoins,
+    nextPrivateState: finalizedTxData.private.nextPrivateState,
+    nextZswapLocalState: finalizedTxData.private.nextZswapLocalState,
+    Output: finalizedTxData.private.output,
+    privateTranscriptOutputs: finalizedTxData.private.privateTranscriptOutputs,
+    result: finalizedTxData.private.result,
+    unprovenTx: finalizedTxData.private.unprovenTx,
+  });
+
   return finalizedTxData.public;
 };
 
@@ -105,6 +150,18 @@ export const displayCounterValue = async (
 
 export const createWalletAndMidnightProvider = async (wallet: Wallet): Promise<WalletProvider & MidnightProvider> => {
   const state = await Rx.firstValueFrom(wallet.state());
+  logger.info({
+    section: 'Wallet State',
+    address: state.address,
+    availableCoins: state.availableCoins,
+    balances: state.balances,
+    coinPublicKey: state.coinPublicKey,
+    coins: state.coins,
+    encryptionPublicKey: state.encryptionPublicKey,
+    nullifiers: state.nullifiers,
+    pendingCoins: state.pendingCoins,
+    syncProgress: state.syncProgress,
+  });
   return {
     coinPublicKey: state.coinPublicKey,
     encryptionPublicKey: state.encryptionPublicKey,

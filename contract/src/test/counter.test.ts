@@ -1,4 +1,4 @@
-import { CounterSimulator } from "./counter-simulator.js";
+import { CounterSimulator, logger } from "./counter-simulator.js";
 import {
   NetworkId,
   setNetworkId
@@ -11,7 +11,12 @@ describe("Counter smart contract", () => {
   it("generates initial ledger state deterministically", () => {
     const simulator0 = new CounterSimulator();
     const simulator1 = new CounterSimulator();
-    expect(simulator0.getLedger()).toEqual(simulator1.getLedger());
+    const initialLedgerState = simulator0.getLedger();
+    expect(initialLedgerState).toEqual(initialLedgerState);
+    logger.info({
+      section: 'Generates initial ledger state', 
+      state: initialLedgerState      
+    });
   });
 
   it("properly initializes ledger state and private state", () => {
@@ -19,6 +24,10 @@ describe("Counter smart contract", () => {
     const initialLedgerState = simulator.getLedger();
     expect(initialLedgerState.round).toEqual(0n);
     const initialPrivateState = simulator.getPrivateState();
+    logger.info({
+      section: 'Initial Private State', 
+      private_state: initialPrivateState      
+    });
     expect(initialPrivateState).toEqual({ privateCounter: 0 });
   });
 
