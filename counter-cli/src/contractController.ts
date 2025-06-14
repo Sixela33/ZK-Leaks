@@ -4,7 +4,7 @@ import { type ContractAddress, tokenType, convert_bigint_to_Uint8Array } from '@
 import { type Observable } from 'rxjs';
 import * as Rx from 'rxjs';
 import { CounterPrivateStateId, CounterProviders, DeployedCounterContract, emptyState, UserAction, type DerivedState } from './common-types';
-import { Counter, CounterPrivateState, createPrivateState } from '@midnight-ntwrk/counter-contract';
+import { Counter, CounterPrivateState, createPrivateState } from '@meshsdk/counter-contract';
 import { deployContract, findDeployedContract } from '@midnight-ntwrk/midnight-js-contracts';
 import { PrivateStateProvider } from '@midnight-ntwrk/midnight-js-types';
 
