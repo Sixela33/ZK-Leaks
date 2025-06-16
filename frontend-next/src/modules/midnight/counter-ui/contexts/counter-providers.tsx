@@ -16,15 +16,15 @@ import {
   createBalancedTx,
 } from '@midnight-ntwrk/midnight-js-types';
 import { Logger } from 'pino';
-import type { CounterCircuits, CounterPrivateStateId } from '@meshsdk/counter-cli';
+import type { CounterCircuits, CounterPrivateStateId } from '../api/common-types';
 import {
   CachedFetchZkConfigProvider,
   noopProofClient,
   proofClient,
   WrappedPrivateStateProvider,
   WrappedPublicDataProvider,
-} from '@/lib/midnight/core';
-import { CounterProviders } from '@meshsdk/counter-cli';
+} from '@/lib/midnight/core/providers-wrappers';
+import { CounterProviders } from '../api/common-types';
 import { Transaction as ZswapTransaction } from '@midnight-ntwrk/zswap';
 import { getLedgerNetworkId, getZswapNetworkId } from '@midnight-ntwrk/midnight-js-network-id';
 import { Transaction } from '@midnight-ntwrk/ledger';
@@ -82,7 +82,7 @@ export const Provider = ({ children, logger }: ProviderProps) => {
     () =>
       new WrappedPrivateStateProvider(
         levelPrivateStateProvider({
-          privateStateStoreName: 'auction-private-state',
+          privateStateStoreName: 'counter-private-state',
         }),
         logger,
       ),
@@ -103,7 +103,7 @@ export const Provider = ({ children, logger }: ProviderProps) => {
       return undefined;
     }
     return new CachedFetchZkConfigProvider<CounterCircuits>(
-      `${window.location.origin}/midnight/auction`,
+      `${window.location.origin}/midnight/counter`,
       fetch.bind(window),
       () => {},
     );

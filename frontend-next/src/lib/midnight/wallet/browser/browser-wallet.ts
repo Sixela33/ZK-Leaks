@@ -4,7 +4,7 @@ import { Transaction } from '@midnight-ntwrk/zswap';
 import { pipe as fnPipe } from 'fp-ts/lib/function.js';
 import { type Logger } from 'pino';
 import { catchError, concatMap, filter, firstValueFrom, interval, map, take, tap, throwError, timeout } from 'rxjs';
-import { checkProofServerStatus } from '../core/proof-server';
+import { checkProofServerStatus } from '@/lib/midnight/core/common/proof-server';
 
 declare global {
   interface Window {

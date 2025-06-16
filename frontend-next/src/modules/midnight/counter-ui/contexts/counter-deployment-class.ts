@@ -1,8 +1,9 @@
-import { type ContractControllerInterface, type CounterProviders, ContractController, CounterPrivateStateId  } from '@meshsdk/counter-cli';
+import { type CounterProviders, CounterPrivateStateId  } from '../api/common-types';
 import { type ContractAddress } from '@midnight-ntwrk/compact-runtime';
 import { BehaviorSubject, type Observable } from 'rxjs';
 import { type Logger } from 'pino';
 import { type LocalStorageProps } from './counter-localStorage-class';
+import { ContractController, ContractControllerInterface } from '../api/contractController';
 
 export type ContractType = 'recent' | 'youcouldjoin' | 'yours' | 'allOther';
 export type ContractDeployment = InProgressContractDeployment | DeployedContract | FailedContractDeployment;

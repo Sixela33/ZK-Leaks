@@ -1,4 +1,4 @@
-import { useDeployedContracts, ContractState, useLocalState } from '@/packages/midnight-contracts/auction';
+import { useDeployedContracts, ContractState, useLocalState } from '@/modules/midnight/counter-ui';
 import { useCallback, useEffect, useState } from 'react';
 
 export const useAuctionContractsSubscriptions = () => {
