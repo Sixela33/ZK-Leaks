@@ -1,6 +1,6 @@
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
-import { MidnightMeshProvider } from "@/components/midnight/wallet-widget";
+import { MidnightMeshProvider } from "@/modules/midnight/wallet-widget";
 import * as pino from "pino";
 
 export const logger = pino.pino({

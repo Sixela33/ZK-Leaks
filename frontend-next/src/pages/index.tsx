@@ -1,5 +1,5 @@
 
-import { MidnightWallet, useAssets, useWallet } from "@/components/midnight/wallet-widget";
+import { MidnightWallet, useAssets, useWallet } from "@/modules/midnight/wallet-widget";
 
 export default function Home() {
   const {

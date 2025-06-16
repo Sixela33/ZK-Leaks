@@ -16,29 +16,29 @@ import {
   createBalancedTx,
 } from '@midnight-ntwrk/midnight-js-types';
 import { Logger } from 'pino';
-import type { CircuitKeys } from '@midnight-ntwrk/counter-cli';
+import type { CounterCircuits, CounterPrivateStateId } from '@meshsdk/counter-cli';
 import {
   CachedFetchZkConfigProvider,
   noopProofClient,
   proofClient,
   WrappedPrivateStateProvider,
   WrappedPublicDataProvider,
-} from '@/packages/midnight-core/providers-wrappers';
-import { PrivateStates, Providers } from '@meshsdk/auction-api';
+} from '@/lib/midnight/core';
+import { CounterProviders } from '@meshsdk/counter-cli';
 import { Transaction as ZswapTransaction } from '@midnight-ntwrk/zswap';
 import { getLedgerNetworkId, getZswapNetworkId } from '@midnight-ntwrk/midnight-js-network-id';
 import { Transaction } from '@midnight-ntwrk/ledger';
-import { ProviderCallbackAction } from '@/packages/midnight-core';
-import { useAssets, useWallet } from '@/packages/midnight-react';
+import { ProviderCallbackAction } from '@/lib/midnight/core';
+import { useAssets, useWallet } from '@/modules/midnight/wallet-widget';
 
 export interface ProvidersState {
-  privateStateProvider: PrivateStateProvider<PrivateStates>;
-  zkConfigProvider?: ZKConfigProvider<CircuitKeys>;
-  proofProvider: ProofProvider<CircuitKeys>;
+  privateStateProvider: PrivateStateProvider<typeof CounterPrivateStateId>;
+  zkConfigProvider?: ZKConfigProvider<CounterCircuits>;
+  proofProvider: ProofProvider<CounterCircuits>;
   publicDataProvider?: PublicDataProvider;
   walletProvider?: WalletProvider;
   midnightProvider?: MidnightProvider;
-  providers?: Providers;
+  providers?: CounterProviders;
   flowMessage?: string;
 }
 
@@ -52,7 +52,7 @@ export const ProvidersContext = createContext<ProvidersState | undefined>(undefi
 export const Provider = ({ children, logger }: ProviderProps) => {
   const [flowMessage, setFlowMessage] = useState<string | undefined>(undefined);
 
-  const { uris, coinPublicKey } = useAssets();
+  const { uris, coinPublicKey, encryptionPublicKey } = useAssets();
   const { midnightBrowserWalletInstance } = useWallet();
 
   const actionMessages = useMemo<Record<ProviderCallbackAction, string | undefined>>(
@@ -78,7 +78,7 @@ export const Provider = ({ children, logger }: ProviderProps) => {
     [actionMessages],
   );
 
-  const privateStateProvider: PrivateStateProvider<PrivateStates> = useMemo(
+  const privateStateProvider: PrivateStateProvider<typeof CounterPrivateStateId> = useMemo(
     () =>
       new WrappedPrivateStateProvider(
         levelPrivateStateProvider({
@@ -102,7 +102,7 @@ export const Provider = ({ children, logger }: ProviderProps) => {
       // Return undefined (or an appropriate fallback) if running on the server.
       return undefined;
     }
-    return new CachedFetchZkConfigProvider<CircuitKeys>(
+    return new CachedFetchZkConfigProvider<CounterCircuits>(
       `${window.location.origin}/midnight/auction`,
       fetch.bind(window),
       () => {},
@@ -119,6 +119,7 @@ export const Provider = ({ children, logger }: ProviderProps) => {
       midnightBrowserWalletInstance
         ? {
             coinPublicKey: coinPublicKey!,
+            encryptionPublicKey: encryptionPublicKey!,
             balanceTx: (tx: UnbalancedTransaction, newCoins: CoinInfo[]): Promise<BalancedTransaction> => {
               providerCallback('balanceTxStarted');
               return midnightBrowserWalletInstance
@@ -133,6 +134,7 @@ export const Provider = ({ children, logger }: ProviderProps) => {
           }
         : {
             coinPublicKey: '',
+            encryptionPublicKey: '',
             balanceTx: () => Promise.reject(new Error('readonly')),
           },
     [midnightBrowserWalletInstance, coinPublicKey, providerCallback],

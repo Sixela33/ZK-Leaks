@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { DAppConnectorAPI } from "@midnight-ntwrk/dapp-connector-api";
-import { MidnightBrowserWallet } from "@/lib/midnight/wallet/browser-wallet";
+import { MidnightBrowserWallet } from "@/lib/midnight/wallet/browser/browser-wallet";
 
 export const useWalletList = () => {
   const [wallets, setWallets] = useState<DAppConnectorAPI[]>([]);
