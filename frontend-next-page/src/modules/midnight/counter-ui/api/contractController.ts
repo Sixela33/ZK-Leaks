@@ -2,7 +2,7 @@ import { type Logger } from 'pino';
 import { type ContractAddress } from '@midnight-ntwrk/compact-runtime';
 import { type Observable } from 'rxjs';
 import * as Rx from 'rxjs';
-import { CounterContract, CounterPrivateStateId, CounterProviders, DeployedCounterContract, emptyState, UserAction, type DerivedState } from '../api/common-types';
+import { CounterContract, CounterPrivateStateId, CounterProviders, DeployedCounterContract, emptyState, UserAction, type DerivedState } from './common-types';
 import { Contract, ledger, CounterPrivateState, createPrivateState, witnesses } from '@meshsdk/counter-contract';
 import { deployContract, findDeployedContract } from '@midnight-ntwrk/midnight-js-contracts';
 import { PrivateStateProvider } from '@midnight-ntwrk/midnight-js-types';
