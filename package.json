@@ -6,7 +6,8 @@
   "workspaces": [
     "counter-cli",
     "counter-contract",
-    "frontend-next-page"
+    "frontend-next-page",
+    "frontend-vite-react"
   ],
   "devDependencies": {
     "@eslint/js": "^9.28.0",
