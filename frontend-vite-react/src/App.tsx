@@ -3,8 +3,8 @@ import { MidnightMeshProvider } from "@/modules/midnight/wallet-widget";
 import * as pino from "pino";
 import { AppProvider } from "@/modules/midnight/counter-ui";
 import { NetworkId, setNetworkId } from '@midnight-ntwrk/midnight-js-network-id';
-import { MainLayout } from './components/layout';
-import { Wallet } from './components/index';
+import { MainLayout } from './layouts/layout';
+import { Home } from './pages/home/';
 
 export const logger = pino.pino({
   level: "trace",
@@ -18,7 +18,7 @@ function App() {
       <BrowserRouter basename="/">
             <Routes>
               <Route element={<MainLayout />}>
-                <Route path="/" element={<Wallet />} />                
+                <Route path="/" element={<Home />} />                
               </Route>
             </Routes>
           </BrowserRouter>        
