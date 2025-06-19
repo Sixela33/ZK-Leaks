@@ -7,8 +7,7 @@ import wasm from 'vite-plugin-wasm';
 import topLevelAwait from 'vite-plugin-top-level-await';
 
 // https://vite.dev/config/
-export default defineConfig({
-  cacheDir: './.vite',  //add cache
+export default defineConfig({  
   plugins: [wasm(), react(), viteCommonjs(), topLevelAwait(), tailwindcss()],  //add plugins
   resolve: {
     alias: {
