@@ -36,7 +36,8 @@ export function Home() {
         <div onClick={() => setOpen(true)}>Open Wallet Dialog</div>
         <div onClick={() => connectWallet("mnLace")}>
           Connect to the Lace Wallet
-        </div>
+        </div>       
+
       </div>
     </>
   );
