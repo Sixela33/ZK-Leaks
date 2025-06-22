@@ -8,6 +8,7 @@ import {
 } from "@midnight-ntwrk/midnight-js-network-id";
 import { MainLayout } from "./layouts/layout";
 import { Home } from "./pages/home/";
+import { Counter } from "./pages/counter";
 
 export const logger = pino.pino({
   level: "trace",
@@ -22,6 +23,7 @@ function App() {
           <Routes>
             <Route element={<MainLayout />}>
               <Route path="/" element={<Home />} />
+              <Route path="/counter" element={<Counter />} />
             </Route>
           </Routes>
         </BrowserRouter>
