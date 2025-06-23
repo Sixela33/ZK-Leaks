@@ -9,19 +9,26 @@ export const Counter = () => {
   const deploy = useDeployedContracts();
   const { contractDeployments } = useContractsSubscriptions();
 
-  const action = async () => {
-    await deploy.deployAndAddContract("recent");
+  const deployNew = async () => {
+    await deploy.deployAndAddContract("recent");    
     console.log("deployed");
   };
 
   return (
     <>
-      <div onClick={action}>Counter</div>
-      {contractDeployments.map((contractState, i) => (
-        <div key={i}>
-          <ContractPage contractStates={contractState} />
-        </div>
-      ))}
+      <h1 className="text-2xl font-bold mb-4">Counter Contracts</h1>
+      <button
+        className="px-4 py-2 mb-6 bg-primary text-primary-foreground rounded shadow cursor-pointer"
+        onClick={deployNew}
+      >
+        Deploy New Contract
+      </button>
+
+      <div className="space-y-4">
+        {contractDeployments.map((contractState, i) => (
+          <ContractPage key={i} contractStates={contractState} />
+        ))}
+      </div>
     </>
   );
 };
@@ -31,13 +38,19 @@ interface ContractPageProps {
 }
 
 const ContractPage = ({ contractStates }: ContractPageProps) => {
-  const { increment } = useContractSubscription(contractStates);
+  const { increment, contractState } = useContractSubscription(contractStates);
 
   return (
-    <>
-      <div>{contractStates.address}</div>
-      <div>{contractStates.contractType}</div>
-      <div onClick={increment}>Increment</div>
-    </>
+    <div className="card bg-card shadow p-4 flex flex-col gap-2">
+      <div className="font-mono text-sm break-all">Address: {contractStates.address}</div>
+      <div className="text-muted-foreground text-sm">Type: {contractStates.contractType}</div>
+      <div className="text-muted-foreground text-sm">Value: {contractState?.round}</div>
+      <button
+        className="self-start px-3 py-1 bg-secondary text-secondary-foreground rounded cursor-pointer"
+        onClick={increment}
+      >
+        Increment
+      </button>
+    </div>
   );
 };

@@ -30,7 +30,7 @@ export const MidnightWallet = () => {
         )}
       </div>
 
-      <DialogContent className="sm:max-w-[425px]" onOpenAutoFocus={(event) => event.preventDefault()}>
+      <DialogContent className="sm:max-w-[425px] justify-center items-center" onOpenAutoFocus={(event) => event.preventDefault()}>
         <Header screen={screen} setScreen={setScreen} />
         {screen == 'main' && <ScreenMain setOpen={setOpen} />}
         <Footer />
