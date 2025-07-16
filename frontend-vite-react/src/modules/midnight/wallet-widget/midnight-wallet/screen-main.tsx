@@ -11,22 +11,29 @@ export default function ScreenMain({
 }) {
   const wallets = useWalletList();
   const { connectWallet } = useWallet();
-
+  
   return (
     <TooltipProvider>
-      <div className="grid gap-4 py-7 place-items-center gap-y-8"
-      style={{ gridTemplateColumns: `repeat(${wallets.length}, minmax(0, 1fr))` }}>
-        {wallets.map((wallet, index) => (
-          <WalletIcon
-            key={index}
-            iconReactNode={<IconLace />}
-            name={wallet.name == "mnLace" ? "LACE" : "UNDEFINED"}
-            action={() => {
-              connectWallet(wallet.name);
-              setOpen(false);
-            }}
-          />
-        ))}  
+      <div
+        className="grid gap-4 py-7 place-items-center gap-y-8"
+        style={{ gridTemplateColumns: `repeat(${wallets.length}, minmax(0, 1fr))` }}
+      >
+        {wallets.map((wallet, index) => {
+          const walletKey = wallet.name === "lace" ? "mnLace" : wallet.name;
+          const displayName = wallet.name === "lace" ? "LACE" : "UNDEFINED";
+  
+          return (
+            <WalletIcon
+              key={index}
+              iconReactNode={<IconLace />}
+              name={displayName}
+              action={() => {
+                connectWallet(walletKey);
+                setOpen(false);
+              }}
+            />
+          );
+        })}
       </div>
     </TooltipProvider>
   );
