@@ -4,15 +4,37 @@ import {
   useContractSubscription,
   useDeployedContracts,
 } from "@/modules/midnight/counter-ui";
+// import { useAssets } from "@/modules/midnight/wallet-widget";
+// import { WalletBuilder } from "@midnight-ntwrk/wallet";
+// import { getZswapNetworkId } from '@midnight-ntwrk/midnight-js-network-id';
 
 export const Counter = () => {
   const deploy = useDeployedContracts();
-  const { contractDeployments } = useContractsSubscriptions();
+  const { contractDeployments } = useContractsSubscriptions();  
 
   const deployNew = async () => {
-    await deploy.deployAndAddContract("recent");    
+    await deploy.deployAndAddContract("recent");
     console.log("deployed");
   };
+
+  // TODO: Add embedded browser-wallet
+  // const { uris } = useAssets();
+  // const initEmbeddedWallet = async () => {
+  //   if (uris === undefined) {
+  //     console.log("No uris found");
+  //     return;
+  //   } 
+  //   const wallet = await WalletBuilder.build(
+  //     uris.indexerUri,
+  //     uris.indexerWsUri,
+  //     uris.proverServerUri,
+  //     uris.substrateNodeUri,
+  //     "seed",
+  //     getZswapNetworkId(),
+  //     'info',
+  //   );
+  //   wallet.start();
+  // };
 
   return (
     <>
@@ -22,8 +44,7 @@ export const Counter = () => {
         onClick={deployNew}
       >
         Deploy New Contract
-      </button>
-
+      </button>      
       <div className="space-y-4">
         {contractDeployments.map((contractState, i) => (
           <ContractPage key={i} contractStates={contractState} />
@@ -42,9 +63,15 @@ const ContractPage = ({ contractStates }: ContractPageProps) => {
 
   return (
     <div className="card bg-card shadow p-4 flex flex-col gap-2">
-      <div className="font-mono text-sm break-all">Address: {contractStates.address}</div>
-      <div className="text-muted-foreground text-sm">Type: {contractStates.contractType}</div>
-      <div className="text-muted-foreground text-sm">Value: {contractState?.round}</div>
+      <div className="font-mono text-sm break-all">
+        Address: {contractStates.address}
+      </div>
+      <div className="text-muted-foreground text-sm">
+        Type: {contractStates.contractType}
+      </div>
+      <div className="text-muted-foreground text-sm">
+        Value: {contractState?.round}
+      </div>
       <button
         className="self-start px-3 py-1 bg-secondary text-secondary-foreground rounded cursor-pointer"
         onClick={increment}
