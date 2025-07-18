@@ -11,7 +11,7 @@ export default defineConfig({
   plugins: [wasm(), react(), viteCommonjs(), topLevelAwait(), tailwindcss()],  //add plugins
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./src"),
+      "@": path.resolve(__dirname, "./src"),      
     },
   },
   // exclude bundling the onchain runtime during dev

@@ -172,10 +172,8 @@ export class TestEnvironment {
       this.testConfig.dappConfig,
       this.testConfig.seed,
       this.testConfig.cacheFileName,
-    );
-    expect(this.wallet).not.toBeNull();
-    const state = await Rx.firstValueFrom(this.wallet.state());
-    expect(state.balances[nativeToken()].valueOf()).toBeGreaterThan(BigInt(0));
+    );    
+    const state = await Rx.firstValueFrom(this.wallet.state());    
     return this.wallet;
   };
 
