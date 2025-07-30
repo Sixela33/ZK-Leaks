@@ -1,5 +1,5 @@
 import path from 'path';
-import { TestEnvironment } from './commons';
+import { TestEnvironment } from '../test/commons';
 import { nativeToken, tokenType } from '@midnight-ntwrk/ledger';
 import { type Wallet } from '@midnight-ntwrk/wallet-api';
 import type { Resource } from '@midnight-ntwrk/wallet';

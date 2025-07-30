@@ -23,12 +23,12 @@ import {
   proofClient,
   WrappedPrivateStateProvider,
   WrappedPublicDataProvider,
-} from '@/lib/midnight/core/providers-wrappers';
+} from '@meshsdk/midnight-core';
 import { CounterProviders } from '../api/common-types';
 import { Transaction as ZswapTransaction } from '@midnight-ntwrk/zswap';
 import { getLedgerNetworkId, getZswapNetworkId } from '@midnight-ntwrk/midnight-js-network-id';
 import { Transaction } from '@midnight-ntwrk/ledger';
-import { ProviderCallbackAction } from '@/lib/midnight/core';
+import { ProviderCallbackAction } from '@meshsdk/midnight-core';
 import { useAssets, useWallet } from '@/modules/midnight/wallet-widget';
 
 export interface ProvidersState {

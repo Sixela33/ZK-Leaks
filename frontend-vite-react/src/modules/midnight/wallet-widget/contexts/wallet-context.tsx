@@ -1,6 +1,6 @@
 import { createContext, useCallback, useEffect, useState } from 'react';
 import { type Logger } from 'pino';
-import { MidnightBrowserWallet } from '@/lib/midnight/wallet';
+import { MidnightBrowserWallet } from '@meshsdk/midnight-wallet';
 import { ServiceUriConfig } from '@midnight-ntwrk/dapp-connector-api';
 
 export enum WalletState {

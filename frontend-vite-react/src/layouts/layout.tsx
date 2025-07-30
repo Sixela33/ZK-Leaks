@@ -22,6 +22,22 @@ export const MainLayout = () => {
           >
             Counter
           </NavLink>
+          <NavLink
+            to="/wallet"
+            className={({ isActive }) =>
+              `font-semibold transition hover:opacity-80 ${isActive ? 'underline' : ''}`
+            }
+          >
+            Wallet
+          </NavLink>
+          <NavLink
+            to="/wallet-ui"
+            className={({ isActive }) =>
+              `font-semibold transition hover:opacity-80 ${isActive ? 'underline' : ''}`
+            }
+          >
+            Wallet UI
+          </NavLink>
         </nav>
       </header>
       <main className="container mx-auto flex-1 py-6">
