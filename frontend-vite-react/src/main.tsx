@@ -1,6 +1,5 @@
 import './globals.ts'
 import './index.css'
-import "@meshsdk/midnight-react/styles.css";
 import { StrictMode, Suspense, lazy } from 'react'
 import { createRoot } from 'react-dom/client'
 import { Loading } from '@/components/loading.tsx'

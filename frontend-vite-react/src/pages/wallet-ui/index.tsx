@@ -6,6 +6,7 @@ import {
   useAssets,
   useWallet,
 } from "@meshsdk/midnight-react";
+import { ModeToggle } from "@/components/mode-toggle";
 
 export function WalletUI() {
   const {
@@ -26,6 +27,7 @@ export function WalletUI() {
         <div className="card bg-card shadow p-6 flex flex-col gap-4">
           <h2 className="text-lg font-semibold">Wallet Widget</h2>
           <MidnightWallet />
+           <ModeToggle />
           <div className="card bg-card shadow p-6 flex flex-col gap-4 md:col-span-2">
             <h2 className="text-lg font-semibold">Wallet Actions</h2>
             <div className="flex gap-4 flex-wrap items-center">

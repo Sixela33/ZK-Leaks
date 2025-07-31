@@ -22,14 +22,14 @@ export const MainLayout = () => {
           >
             Counter
           </NavLink>
-          <NavLink
+          {/* <NavLink
             to="/wallet"
             className={({ isActive }) =>
               `font-semibold transition hover:opacity-80 ${isActive ? 'underline' : ''}`
             }
           >
             Wallet
-          </NavLink>
+          </NavLink> */}
           <NavLink
             to="/wallet-ui"
             className={({ isActive }) =>
