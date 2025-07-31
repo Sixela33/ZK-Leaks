@@ -29,7 +29,7 @@ import { Transaction as ZswapTransaction } from '@midnight-ntwrk/zswap';
 import { getLedgerNetworkId, getZswapNetworkId } from '@midnight-ntwrk/midnight-js-network-id';
 import { Transaction } from '@midnight-ntwrk/ledger';
 import { ProviderCallbackAction } from '@meshsdk/midnight-core';
-import { useAssets, useWallet } from '@/modules/midnight/wallet-widget';
+import { useAssets, useWallet } from '@meshsdk/midnight-react';
 
 export interface ProvidersState {
   privateStateProvider: PrivateStateProvider<typeof CounterPrivateStateId>;

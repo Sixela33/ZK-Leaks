@@ -1,5 +1,5 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { MidnightMeshProvider } from "@/modules/midnight/wallet-widget";
+import { MidnightMeshProvider } from "@meshsdk/midnight-react";
 import * as pino from "pino";
 import { AppProvider } from "@/modules/midnight/counter-ui";
 import {

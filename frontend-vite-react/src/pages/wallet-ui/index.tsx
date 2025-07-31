@@ -1,8 +1,11 @@
 import {
-  MidnightWallet,
+  MidnightWallet, 
+} from "@/modules/midnight/wallet-widget";
+
+import { 
   useAssets,
   useWallet,
-} from "@/modules/midnight/wallet-widget";
+} from "@meshsdk/midnight-react";
 
 export function WalletUI() {
   const {

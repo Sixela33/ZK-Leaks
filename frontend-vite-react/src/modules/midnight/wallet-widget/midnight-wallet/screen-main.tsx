@@ -1,6 +1,6 @@
 import IconLace from '../common/icons/icon-lace';
 import { TooltipProvider } from '../common/tooltip';
-import { useWallet, useWalletList } from '../hooks';
+import { useWallet, useWalletList } from '@meshsdk/midnight-react';
 import WalletIcon from './wallet-icon';
 
 export default function ScreenMain({
