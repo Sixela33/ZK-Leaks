@@ -1,8 +1,7 @@
 import './globals.ts'
-
+import './index.css'
 import { StrictMode, Suspense, lazy } from 'react'
 import { createRoot } from 'react-dom/client'
-import './index.css'
 import { Loading } from '@/components/loading.tsx'
 
 const LazyApp = lazy(() => import('./App'));
