@@ -5,8 +5,7 @@
   "type": "module",
   "workspaces": [
     "counter-cli",
-    "counter-contract",
-    "frontend-next-page",
+    "counter-contract",    
     "frontend-vite-react"
   ],
   "devDependencies": {
