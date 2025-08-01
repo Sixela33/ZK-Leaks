@@ -21,3 +21,15 @@ curl --proto '=https' --tlsv1.2 -LsSf https://github.com/midnightntwrk/compact/r
 ```
 find . -type f -size +100M -not -path "*/node_modules/*" -exec ls -lh {} \;
 ```
+
+### Git LFS
+- Install Git LFS
+```
+sudo dnf install git-lfs
+```
+- Initialize Git LFS
+```
+git lfs install
+```
+
+
