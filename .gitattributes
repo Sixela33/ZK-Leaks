@@ -1,0 +1,11 @@
+# Track all files in the managed directory with Git LFS
+counter-contract/src/managed/**/*.pem filter=lfs diff=lfs merge=lfs -text
+counter-contract/src/managed/**/*.key filter=lfs diff=lfs merge=lfs -text
+counter-contract/src/managed/**/*.crt filter=lfs diff=lfs merge=lfs -text
+counter-contract/src/managed/**/*.pub filter=lfs diff=lfs merge=lfs -text
+counter-contract/src/managed/**/*.priv filter=lfs diff=lfs merge=lfs -text
+counter-contract/src/managed/**/*.sig filter=lfs diff=lfs merge=lfs -text
+counter-contract/src/managed/**/*.cert filter=lfs diff=lfs merge=lfs -text
+
+# Track all files in the counter subdirectories
+counter-contract/src/managed/counter/** filter=lfs diff=lfs merge=lfs -text
