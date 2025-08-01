@@ -9,7 +9,6 @@ import {
 import { MainLayout } from "./layouts/layout";
 import { Home } from "./pages/home/";
 import { Counter } from "./pages/counter";
-import { Wallet } from "./pages/wallet";
 import { WalletUI } from "./pages/wallet-ui";
 import { ThemeProvider } from "./components/theme-provider";
 
@@ -26,8 +25,7 @@ function App() {
           <BrowserRouter basename="/">
             <Routes>
               <Route element={<MainLayout />}>
-                <Route path="/" element={<Home />} />
-                <Route path="/wallet" element={<Wallet />} />
+                <Route path="/" element={<Home />} />                
                 <Route path="/wallet-ui" element={<WalletUI />} />
                 <Route path="/counter" element={<Counter />} />
               </Route>

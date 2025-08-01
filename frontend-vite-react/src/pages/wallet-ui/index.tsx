@@ -1,7 +1,6 @@
 import {
   MidnightWallet, 
 } from "@/modules/midnight/wallet-widget";
-
 import { 
   useAssets,
   useWallet,
