@@ -1,4 +1,4 @@
-import { type CounterPrivateState, type Contract, Ledger } from '@meshsdk/counter-contract';
+import { type CounterPrivateState, type Contract, Ledger, createPrivateState } from '@meshsdk/counter-contract';
 import type { ImpureCircuitId, MidnightProviders } from '@midnight-ntwrk/midnight-js-types';
 import type { DeployedContract, FoundContract } from '@midnight-ntwrk/midnight-js-contracts';
 
@@ -18,8 +18,12 @@ export type UserAction = {
 
 export type DerivedState = {
   readonly round: Ledger["round"];
+  readonly privateState: CounterPrivateState;
+  readonly turns: UserAction;
 };
 
 export const emptyState: DerivedState = {
   round: 0n,
+  privateState: createPrivateState(0),
+  turns: { increment: undefined },
 };

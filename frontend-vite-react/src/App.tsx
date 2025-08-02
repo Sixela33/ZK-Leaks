@@ -15,17 +15,19 @@ import { ThemeProvider } from "./components/theme-provider";
 export const logger = pino.pino({
   level: "trace",
 });
-setNetworkId(NetworkId.Undeployed);
+setNetworkId(NetworkId.TestNet);
+const contractAddress =
+  "0200f0fbacdef4a1d98775768b5c2ab965d877bc0b9f83dc670607f9f9b59d03359e";
 
 function App() {
   return (
     <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
       <MidnightMeshProvider logger={logger}>
-        <AppProvider logger={logger}>
+        <AppProvider logger={logger} contractAddress={contractAddress}>
           <BrowserRouter basename="/">
             <Routes>
               <Route element={<MainLayout />}>
-                <Route path="/" element={<Home />} />                
+                <Route path="/" element={<Home />} />
                 <Route path="/wallet-ui" element={<WalletUI />} />
                 <Route path="/counter" element={<Counter />} />
               </Route>

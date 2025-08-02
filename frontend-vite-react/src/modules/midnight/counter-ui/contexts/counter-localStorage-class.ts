@@ -3,8 +3,8 @@ import type { Logger } from 'pino';
 export interface LocalStorageProps {    
   readonly addContract: (contract: string) => void;
   readonly getContracts: () => string[];
-  readonly getContractPrivateId: (contract: string) => string | null;
-  readonly setContractPrivateId: (contractPrivateId: string, contract: string) => void;
+  // readonly getContractPrivateId: (contract: string) => string | null;
+  // readonly setContractPrivateId: (contractPrivateId: string, contract: string) => void;
 }
 
 export class LocalStorage implements LocalStorageProps {
@@ -24,12 +24,12 @@ export class LocalStorage implements LocalStorageProps {
     return Array.from<string>(new Set([...contracts]));
   }
 
-  getContractPrivateId(contract: string): string | null {
-    return window.localStorage.getItem('counter_contractPrivateId' + contract);
-  }
+  // getContractPrivateId(contract: string): string | null {
+  //   return window.localStorage.getItem('counter_contractPrivateId' + contract);
+  // }
 
-  setContractPrivateId(contractPrivateId: string, contract: string): void {
-    this.logger.trace(`Setting contract id ${contractPrivateId} for contract ${contract}`);
-    window.localStorage.setItem('counter_contractPrivateId' + contract, contractPrivateId);
-  }
+  // setContractPrivateId(contractPrivateId: string, contract: string): void {
+  //   this.logger.trace(`Setting contract id ${contractPrivateId} for contract ${contract}`);
+  //   window.localStorage.setItem('counter_contractPrivateId' + contract, contractPrivateId);
+  // }
 }
