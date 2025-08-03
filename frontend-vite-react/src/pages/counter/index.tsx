@@ -1,11 +1,13 @@
 import {  
   useContractSubscription,
   useDeployedContracts,
+  useProviders,
 } from "@/modules/midnight/counter-ui";
 
 export const Counter = () => {
   const deploy = useDeployedContracts();  
-  const { deployedContractAPI, derivedState} = useContractSubscription();
+  const { contractDeployment, deployedContractAPI, derivedState} = useContractSubscription();
+  const providers = useProviders();
 
   const deployNew = async () => {
     await deploy.deployContract();
@@ -41,6 +43,8 @@ export const Counter = () => {
       <p className="text-lg font-semibold">Counter value: {derivedState?.round}</p>
       <p className="text-lg font-semibold">Private data: {derivedState?.privateState.privateCounter}</p>
       <p className="text-lg font-semibold">Turns: {derivedState?.turns.increment}</p>
+      <p className="text-lg font-semibold">Contract Address: {contractDeployment?.status}</p>
+      <p className="text-lg font-semibold">Flow Message: {providers?.flowMessage}</p>
     </div>
     </>
   );
