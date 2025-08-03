@@ -3,7 +3,7 @@ import { useAssets, useWallet } from "@meshsdk/midnight-react";
 import { ModeToggle } from "@/components/mode-toggle";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Copy, Link2, Server, Wifi, WifiOff, Wallet, Key } from "lucide-react";
+import { Link2, Server, Wifi, WifiOff, Wallet, Key } from "lucide-react";
 
 export function WalletUI() {
   const {
