@@ -15,7 +15,9 @@ import { ThemeProvider } from "./components/theme-provider";
 export const logger = pino.pino({
   level: "trace",
 });
+// Update this network id, could be testnet or undeployed
 setNetworkId(NetworkId.TestNet);
+// Update this with your deployed contract address
 const contractAddress =
   "02001d8febe8b845d78be10413f3c9e910f06b6c78108b0c8287d94928ba9d22d571";
 

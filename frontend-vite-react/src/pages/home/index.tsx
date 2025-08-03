@@ -25,7 +25,7 @@ export function Home() {
       <div className="max-w-4xl mx-auto">
         <div className="flex justify-between items-center mb-12">
           <div className="text-center md:text-left">
-            <h1 className="text-4xl font-bold text-foreground mb-2">Welcome to Midnight Starter</h1>
+            <h1 className="text-4xl font-bold text-foreground mb-2">Midnight Starter Template</h1>
             <p className="text-xl text-muted-foreground">Explore our implementations and features</p>
           </div>
           <ModeToggle />
@@ -57,8 +57,55 @@ export function Home() {
           ))}
         </div>
         
-        <div className="mt-12 text-center text-muted-foreground text-sm">
-          <p>Get started by exploring the implementations above</p>
+        <div className="mt-20 mb-12 text-center">
+          <p className="text-muted-foreground text-sm mb-10">Get started by exploring the implementations above</p>
+          
+          <div className="flex flex-col items-center justify-center space-y-1">
+            <p className="text-xs text-muted-foreground tracking-wider mb-3">POWERED BY</p>
+            <div className="flex items-center justify-center gap-5">
+              <a 
+                href="https://meshjs.dev" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="flex items-center h-7 hover:opacity-80 transition-opacity"
+                aria-label="Visit Mesh website"
+              >
+                <img 
+                  src="/meshlogo-with-title-white.svg" 
+                  alt="Mesh" 
+                  className="h-7 dark:block hidden object-contain"
+                  style={{ width: 'auto' }}
+                />
+                <img 
+                  src="/meshlogo-with-title-black.svg" 
+                  alt="Mesh" 
+                  className="h-7 dark:hidden block object-contain"
+                  style={{ width: 'auto' }}
+                />
+              </a>
+              <div className="text-lg font-light text-muted-foreground opacity-50">×</div>
+              <a 
+                href="https://eddalabs.io" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="flex items-center h-5 hover:opacity-80 transition-opacity"
+                aria-label="Visit Edda Labs website"
+              >
+                <img 
+                  src="/transparent-logo-white.svg" 
+                  alt="Edda Labs" 
+                  className="h-5 dark:block hidden object-contain"
+                  style={{ width: 'auto' }}
+                />
+                <img 
+                  src="/transparent-logo-black.svg" 
+                  alt="Edda Labs" 
+                  className="h-5 dark:hidden block object-contain"
+                  style={{ width: 'auto' }}
+                />
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </div>

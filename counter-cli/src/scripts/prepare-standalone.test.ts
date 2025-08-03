@@ -10,6 +10,7 @@ import * as api from '../api';
 import { currentDir } from '../config';
 import { createLogger } from '../logger-utils';
 
+// Update this wallet address with your own undeployed-network wallet
 const my_own_wallet =
   'mn_shield-addr_undeployed1pldqkwy77d0cw0yspkqxv8urkxhtlm3p9w3aq500wuqhaagaljnsxq93lz69qpm6erjvk7wgun3crpf999wcukywuk5c5ch7jpaf62dm7v4tuepw';
 const logDir = path.resolve(currentDir, '..', 'logs', 'prepare-standalone', `${new Date().toISOString()}.log`);
