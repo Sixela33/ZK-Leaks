@@ -1,7 +1,7 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { MidnightMeshProvider } from "@meshsdk/midnight-react";
 import * as pino from "pino";
-import { AppProvider } from "@/modules/midnight/counter-ui";
+import { CounterAppProvider } from "@/modules/midnight/counter-ui";
 import {
   NetworkId,
   setNetworkId,
@@ -17,13 +17,13 @@ export const logger = pino.pino({
 });
 setNetworkId(NetworkId.TestNet);
 const contractAddress =
-  "0200f0fbacdef4a1d98775768b5c2ab965d877bc0b9f83dc670607f9f9b59d03359e";
+  "02001d8febe8b845d78be10413f3c9e910f06b6c78108b0c8287d94928ba9d22d571";
 
 function App() {
   return (
     <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
       <MidnightMeshProvider logger={logger}>
-        <AppProvider logger={logger} contractAddress={contractAddress}>
+        <CounterAppProvider logger={logger} contractAddress={contractAddress}>
           <BrowserRouter basename="/">
             <Routes>
               <Route element={<MainLayout />}>
@@ -33,7 +33,7 @@ function App() {
               </Route>
             </Routes>
           </BrowserRouter>
-        </AppProvider>
+        </CounterAppProvider>
       </MidnightMeshProvider>
     </ThemeProvider>
   );

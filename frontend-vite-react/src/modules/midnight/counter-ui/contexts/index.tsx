@@ -16,7 +16,7 @@ interface AppProviderProps {
   contractAddress: ContractAddress;
 }
 
-export const AppProvider = ({ children, logger, contractAddress }: AppProviderProps) => {
+export const CounterAppProvider = ({ children, logger, contractAddress }: AppProviderProps) => {
   return (
     <LocalStorageProvider logger={logger}>
       <Provider logger={logger}>

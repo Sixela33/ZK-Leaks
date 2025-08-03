@@ -2,6 +2,7 @@ import {
   ContractDeployment,
   useProviders,
   useDeployedContracts,
+  ContractFollow,
 } from "@/modules/midnight/counter-ui";
 import { DerivedState } from "../api/common-types";
 import { useCallback, useEffect, useState } from "react";
@@ -22,6 +23,11 @@ export const useContractSubscription = () => {
   const [deployedContractAPI, setDeployedContractAPI] =
     useState<ContractControllerInterface>();
   const [derivedState, setDerivedState] = useState<DerivedState>();
+
+  const onDeploy = async (): Promise<ContractFollow> => {
+    const contractFollow = await deploy.deployContract();
+    return contractFollow;
+  }
 
   const onJoin = useCallback(async (): Promise<void> => {
     setCounterDeploymentObservable(deploy.joinContract().observable);
@@ -70,9 +76,10 @@ export const useContractSubscription = () => {
     }
   }, [deployedContractAPI]);
 
-  return {    
-    contractDeployment,
+  return {       
     deployedContractAPI,
     derivedState,
+    onDeploy,
+    providers
   };
 };
