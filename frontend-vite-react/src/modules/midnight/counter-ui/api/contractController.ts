@@ -10,9 +10,8 @@ import { PrivateStateProvider } from '@midnight-ntwrk/midnight-js-types';
 export const counterContractInstance: CounterContract = new Contract(witnesses);
 
 export interface ContractControllerInterface {
-  readonly deployedContractAddress: ContractAddress;
+  readonly deployedContractAddress: ContractAddress;   
   readonly state$: Observable<DerivedState>;
-
   increment: () => Promise<void>;
 }
 
@@ -31,6 +30,8 @@ export class ContractController implements ContractControllerInterface {
     const combine = (_acc: DerivedState, value: DerivedState): DerivedState => {
       return {
         round: value.round,
+        privateState: value.privateState,
+        turns: value.turns,        
       };
     };
     this.deployedContractAddress = deployedContract.deployTxData.public.contractAddress;
@@ -49,9 +50,11 @@ export class ContractController implements ContractControllerInterface {
         ),
         Rx.concat(Rx.of<UserAction>({ increment: undefined }), this.turns$),
       ],
-      (ledgerState, _privateState, _userActions) => {
+      (ledgerState, privateState, userActions) => {
         const result: DerivedState = {
           round: ledgerState.round,
+          privateState: privateState,
+          turns: userActions,
         };
         return result;
       },
@@ -76,6 +79,9 @@ export class ContractController implements ContractControllerInterface {
           txHash: txData.public.txHash,
           blockHeight: txData.public.blockHeight,
         },
+      });
+      this.turns$.next({
+        increment: undefined,
       });
     } catch (e) {
       this.turns$.next({

@@ -57,6 +57,8 @@ jspm_packages/
 *.njsproj
 *.sln
 
-# Compact
-managed/
+# Turbo
+.turbo
+
+
 

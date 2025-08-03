@@ -1,83 +1,124 @@
-import {
-  ContractState,
-  useContractsSubscriptions,
-  useContractSubscription,
-  useDeployedContracts,
-} from "@/modules/midnight/counter-ui";
-// import { useAssets } from "@/modules/midnight/wallet-widget";
-// import { WalletBuilder } from "@midnight-ntwrk/wallet";
-// import { getZswapNetworkId } from '@midnight-ntwrk/midnight-js-network-id';
+import { Loading } from "@/components/loading";
+import { useContractSubscription } from "@/modules/midnight/counter-ui";
+import { useEffect, useState } from "react";
+import { RefreshCw, PlusCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { ModeToggle } from "@/components/mode-toggle";
 
 export const Counter = () => {
-  const deploy = useDeployedContracts();
-  const { contractDeployments } = useContractsSubscriptions();  
+  const { deployedContractAPI, derivedState, onDeploy, providers } =
+    useContractSubscription();
+  const [deployedAddress, setDeployedAddress] = useState<string | undefined>(
+    undefined
+  );
+  const [appLoading, setAppLoading] = useState(true);
+
+  useEffect(() => {
+    if (derivedState?.round !== undefined) {
+      setAppLoading(false);
+    }
+  }, [derivedState?.round]);
 
   const deployNew = async () => {
-    await deploy.deployAndAddContract("recent");
-    console.log("deployed");
+    const { address } = await onDeploy();
+    setDeployedAddress(address);
   };
 
-  // TODO: Add embedded browser-wallet
-  // const { uris } = useAssets();
-  // const initEmbeddedWallet = async () => {
-  //   if (uris === undefined) {
-  //     console.log("No uris found");
-  //     return;
-  //   } 
-  //   const wallet = await WalletBuilder.build(
-  //     uris.indexerUri,
-  //     uris.indexerWsUri,
-  //     uris.proverServerUri,
-  //     uris.substrateNodeUri,
-  //     "seed",
-  //     getZswapNetworkId(),
-  //     'info',
-  //   );
-  //   wallet.start();
-  // };
+  const increment = async () => {
+    if (deployedContractAPI) {
+      await deployedContractAPI.increment();
+    }
+  };
 
   return (
-    <>
-      <h1 className="text-2xl font-bold mb-4">Counter Contracts</h1>
-      <button
-        className="px-4 py-2 mb-6 bg-primary text-primary-foreground rounded shadow cursor-pointer"
-        onClick={deployNew}
-      >
-        Deploy New Contract
-      </button>      
-      <div className="space-y-4">
-        {contractDeployments.map((contractState, i) => (
-          <ContractPage key={i} contractStates={contractState} />
-        ))}
-      </div>
-    </>
-  );
-};
+    <div className="min-h-screen bg-background py-12 px-4 sm:px-6 lg:px-8">
+      {appLoading && <Loading />}
+      <div className="max-w-4xl mx-auto">
+        <div className="flex justify-between items-center mb-8">
+          <div className="text-center md:text-left">
+            <h1 className="text-4xl font-bold text-foreground mb-2">Counter Contract</h1>
+            <p className="text-xl text-muted-foreground">Interact with the counter smart contract</p>
+          </div>
+          <div className="hidden md:block">
+            <ModeToggle />
+          </div>
+        </div>
 
-interface ContractPageProps {
-  contractStates: ContractState;
-}
+        <Card className="mb-8">
+          <CardHeader className="text-center">
+            <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+              <PlusCircle className="w-10 h-10 text-primary" />
+            </div>
+            <CardTitle className="text-2xl">Counter Contract</CardTitle>
+            <CardDescription className="max-w-md mx-auto">
+              Deploy and interact with a simple counter smart contract
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-6">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button onClick={deployNew} className="gap-2">
+                  <PlusCircle className="w-5 h-5" />
+                  <span>Deploy New Contract</span>
+                </Button>
+              </div>
 
-const ContractPage = ({ contractStates }: ContractPageProps) => {
-  const { increment, contractState } = useContractSubscription(contractStates);
+              {deployedAddress && (
+                <div className="p-4 bg-muted rounded-lg">
+                  <p className="text-sm font-medium text-muted-foreground mb-1">Deployed Contract</p>
+                  <p className="text-sm font-mono break-all">{deployedAddress}</p>
+                </div>
+              )}
 
-  return (
-    <div className="card bg-card shadow p-4 flex flex-col gap-2">
-      <div className="font-mono text-sm break-all">
-        Address: {contractStates.address}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
+                <Card>
+                  <CardContent className="pt-6">
+                    <p className="text-sm font-medium text-muted-foreground mb-1">Counter Value</p>
+                    <p className="text-2xl font-bold">{derivedState?.round || '0'}</p>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardContent className="pt-6">
+                    <p className="text-sm font-medium text-muted-foreground mb-1">Private Data</p>
+                    <p className="text-2xl font-bold">{derivedState?.privateState.privateCounter || '0'}</p>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardContent className="pt-6">
+                    <p className="text-sm font-medium text-muted-foreground mb-1">Turns</p>
+                    <p className="text-sm font-mono break-all">{derivedState?.turns.increment || 'idle'}</p>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardContent className="pt-6">
+                    <p className="text-sm font-medium text-muted-foreground mb-1">Contract Address</p>
+                    <p className="text-sm font-mono break-all">{deployedContractAPI?.deployedContractAddress || 'Not deployed'}</p>
+                  </CardContent>
+                </Card>
+              </div>
+
+              <div className="flex justify-center mt-6">
+                <Button
+                  onClick={increment}
+                  disabled={!deployedContractAPI}
+                  variant={deployedContractAPI ? "default" : "secondary"}
+                  className="gap-2"
+                >
+                  <RefreshCw className="w-5 h-5" />
+                  <span>Increment Counter</span>
+                </Button>
+              </div>
+
+              {providers?.flowMessage && (
+                <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                  <p className="text-sm font-medium text-blue-600 dark:text-blue-400">{providers.flowMessage}</p>
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
       </div>
-      <div className="text-muted-foreground text-sm">
-        Type: {contractStates.contractType}
-      </div>
-      <div className="text-muted-foreground text-sm">
-        Value: {contractState?.round}
-      </div>
-      <button
-        className="self-start px-3 py-1 bg-secondary text-secondary-foreground rounded cursor-pointer"
-        onClick={increment}
-      >
-        Increment
-      </button>
     </div>
   );
 };
