@@ -15,50 +15,56 @@ if (expectedRuntimeVersion[0] != actualRuntimeVersion[0]
 
 const _descriptor_0 = new __compactRuntime.CompactTypeUnsignedInteger(65535n, 2);
 
-const _descriptor_1 = new __compactRuntime.CompactTypeBytes(32);
+const _descriptor_1 = new __compactRuntime.CompactTypeUnsignedInteger(18446744073709551615n, 8);
+
+const _descriptor_2 = new __compactRuntime.CompactTypeBoolean();
+
+const _descriptor_3 = new __compactRuntime.CompactTypeBytes(32);
 
 class _ContractAddress_0 {
   alignment() {
-    return _descriptor_1.alignment();
+    return _descriptor_3.alignment();
   }
   fromValue(value_0) {
     return {
-      bytes: _descriptor_1.fromValue(value_0)
+      bytes: _descriptor_3.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_1.toValue(value_0.bytes);
+    return _descriptor_3.toValue(value_0.bytes);
   }
 }
 
-const _descriptor_2 = new _ContractAddress_0();
-
-const _descriptor_3 = new __compactRuntime.CompactTypeUnsignedInteger(18446744073709551615n, 8);
-
-const _descriptor_4 = new __compactRuntime.CompactTypeBoolean();
+const _descriptor_4 = new _ContractAddress_0();
 
 const _descriptor_5 = new __compactRuntime.CompactTypeUnsignedInteger(255n, 1);
+
+const _descriptor_6 = new __compactRuntime.CompactTypeUnsignedInteger(340282366920938463463374607431768211455n, 16);
 
 class Contract {
   witnesses;
   constructor(...args_0) {
-    if (args_0.length !== 1)
+    if (args_0.length !== 1) {
       throw new __compactRuntime.CompactError(`Contract constructor: expected 1 argument, received ${args_0.length}`);
+    }
     const witnesses_0 = args_0[0];
-    if (typeof(witnesses_0) !== 'object')
+    if (typeof(witnesses_0) !== 'object') {
       throw new __compactRuntime.CompactError('first (witnesses) argument to Contract constructor is not an object');
+    }
     this.witnesses = witnesses_0;
     this.circuits = {
       increment: (...args_1) => {
-        if (args_1.length !== 1)
+        if (args_1.length !== 1) {
           throw new __compactRuntime.CompactError(`increment: expected 1 argument (as invoked from Typescript), received ${args_1.length}`);
+        }
         const contextOrig_0 = args_1[0];
-        if (!(typeof(contextOrig_0) === 'object' && contextOrig_0.originalState != undefined && contextOrig_0.transactionContext != undefined))
+        if (!(typeof(contextOrig_0) === 'object' && contextOrig_0.originalState != undefined && contextOrig_0.transactionContext != undefined)) {
           __compactRuntime.type_error('increment',
                                       'argument 1 (as invoked from Typescript)',
                                       'counter.compact line 9 char 1',
                                       'CircuitContext',
                                       contextOrig_0)
+        }
         const context = { ...contextOrig_0 };
         const partialProofData = {
           input: { value: [], alignment: [] },
@@ -66,7 +72,7 @@ class Contract {
           publicTranscript: [],
           privateTranscriptOutputs: []
         };
-        const result_0 = this.#_increment_0(context, partialProofData);
+        const result_0 = this._increment_0(context, partialProofData);
         partialProofData.output = { value: [], alignment: [] };
         return { result: result_0, context: context, proofData: partialProofData };
       }
@@ -74,8 +80,9 @@ class Contract {
     this.impureCircuits = { increment: this.circuits.increment };
   }
   initialState(...args_0) {
-    if (args_0.length !== 1)
+    if (args_0.length !== 1) {
       throw new __compactRuntime.CompactError(`Contract state constructor: expected 1 argument (as invoked from Typescript), received ${args_0.length}`);
+    }
     const constructorContext_0 = args_0[0];
     if (typeof(constructorContext_0) !== 'object') {
       throw new __compactRuntime.CompactError(`Contract state constructor: expected 'constructorContext' in argument 1 (as invoked from Typescript) to be an object`);
@@ -110,8 +117,8 @@ class Contract {
                                value: __compactRuntime.StateValue.newCell({ value: _descriptor_5.toValue(0n),
                                                                             alignment: _descriptor_5.alignment() }).encode() } },
                      { push: { storage: true,
-                               value: __compactRuntime.StateValue.newCell({ value: _descriptor_3.toValue(0n),
-                                                                            alignment: _descriptor_3.alignment() }).encode() } },
+                               value: __compactRuntime.StateValue.newCell({ value: _descriptor_1.toValue(0n),
+                                                                            alignment: _descriptor_1.alignment() }).encode() } },
                      { ins: { cached: false, n: 1 } }]);
     state_0.data = context.transactionContext.state;
     return {
@@ -120,7 +127,7 @@ class Contract {
       currentZswapLocalState: context.currentZswapLocalState
     }
   }
-  #_increment_0(context, partialProofData) {
+  _increment_0(context, partialProofData) {
     const tmp_0 = 1n;
     Contract._query(context,
                     partialProofData,
@@ -179,7 +186,7 @@ function ledger(state) {
   };
   return {
     get round() {
-      return _descriptor_3.fromValue(Contract._query(context,
+      return _descriptor_1.fromValue(Contract._query(context,
                                                      partialProofData,
                                                      [
                                                       { dup: { n: 0 } },
@@ -199,7 +206,7 @@ const _emptyContext = {
   transactionContext: new __compactRuntime.QueryContext(new __compactRuntime.ContractState().data, __compactRuntime.dummyContractAddress())
 };
 const _dummyContract = new Contract({ });
-const pureCircuits = { };
+const pureCircuits = {};
 const contractReferenceLocations = { tag: 'publicLedgerArray', indices: { } };
 exports.Contract = Contract;
 exports.ledger = ledger;
