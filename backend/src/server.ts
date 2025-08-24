@@ -312,6 +312,95 @@ export function createServer(): FastifyInstance {
     }
   );
 
+  // NUEVO: Endpoint para obtener metadatos de IPFS (proxy para evitar CORS)
+  fastify.get('/ipfs-metadata/:cid', async (request: FastifyRequest, reply: FastifyReply) => {
+    try {
+      const { cid } = request.params as { cid: string };
+      
+      console.log('🔍 IPFS Metadata Request for CID:', cid);
+      
+      // Validar que el CID no esté vacío
+      if (!cid || cid.trim() === '') {
+        console.log('❌ Missing CID');
+        reply.status(400).send({ error: 'missing_cid' });
+        return;
+      }
+
+      // Try multiple IPFS gateways with fallback
+      const gateways = [
+        `https://gateway.pinata.cloud/ipfs/${cid}`,
+        `https://ipfs.io/ipfs/${cid}`,
+        `https://dweb.link/ipfs/${cid}`,
+        `https://cloudflare-ipfs.com/ipfs/${cid}`
+      ];
+
+      for (const gateway of gateways) {
+        try {
+          console.log(`🌐 Trying gateway: ${gateway}`);
+          
+          const response = await fetch(gateway, {
+            method: 'GET',
+            headers: {
+              'Accept': 'application/json',
+              'User-Agent': 'ZK-Leaks-Backend/1.0'
+            }
+          });
+          
+          console.log(`📡 ${gateway} Response status:`, response.status);
+          
+          if (response.ok) {
+            const metadata = await response.json();
+            console.log('✅ IPFS Metadata received:', metadata);
+            
+            // Validar que sea un objeto JSON válido
+            if (typeof metadata !== 'object' || metadata === null) {
+              console.log('❌ Invalid metadata format');
+              continue; // Try next gateway
+            }
+
+            console.log(`🎉 Success with gateway: ${gateway}`);
+            reply.send({
+              success: true,
+              metadata,
+              cid,
+              gateway: gateway,
+              timestamp: new Date().toISOString()
+            });
+            return;
+          } else if (response.status === 429) {
+            console.log(`⚠️ Rate limited by ${gateway}, trying next...`);
+            continue;
+          } else {
+            console.log(`❌ ${gateway} failed with status: ${response.status}`);
+            continue;
+          }
+        } catch (gatewayError) {
+          console.log(`💥 Error with ${gateway}:`, gatewayError);
+          continue;
+        }
+      }
+      
+      // If all gateways failed
+      console.log('❌ All gateways failed for CID:', cid);
+      reply.status(404).send({ 
+        error: 'ipfs_content_not_found',
+        message: 'All IPFS gateways failed to retrieve content',
+        cid: cid
+      });
+      
+    } catch (error) {
+      console.error('💥 Error fetching IPFS metadata:', error);
+      if (error instanceof Error) {
+        reply.status(500).send({ 
+          error: 'ipfs_fetch_failed', 
+          details: error.message 
+        });
+      } else {
+        reply.status(500).send({ error: 'ipfs_fetch_failed' });
+      }
+    }
+  });
+
   // Endpoints legacy (mantener compatibilidad)
   fastify.post(
     '/request-otp',

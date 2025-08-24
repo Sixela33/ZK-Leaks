@@ -1,7 +1,7 @@
 import { Loading } from "@/components/loading";
 import { useContractSubscription } from "@/modules/midnight/counter-ui";
 import { useEffect, useState } from "react";
-import { Search, FileText, ExternalLink, Copy } from "lucide-react";
+import { Search, FileText, ExternalLink, Copy, RefreshCw, Shield, CheckCircle } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -15,12 +15,17 @@ interface LeakMetadata {
   title: string;
   description: string;
   imagecid: string;
+  tld?: string;
+  emailVerified?: boolean;
+  verificationTimestamp?: number;
 }
 
 export const LeaksExplorer = () => {
   const { deployedContractAPI, derivedState, providers } = useContractSubscription();
   const [appLoading, setAppLoading] = useState(true);
   const [leakMetadata, setLeakMetadata] = useState<Map<string, LeakMetadata>>(new Map());
+  const [isUpdatingMetadata, setIsUpdatingMetadata] = useState(false);
+  const [lastUpdateTime, setLastUpdateTime] = useState<Date | null>(null);
 
   useEffect(() => {
     if (derivedState?.round !== undefined) {
@@ -28,13 +33,16 @@ export const LeaksExplorer = () => {
     }
   }, [derivedState?.round]);
 
-  // Function to fetch metadata from IPFS
+  // Function to fetch metadata from IPFS via backend proxy
   const fetchLeakMetadata = async (uri: string): Promise<LeakMetadata | null> => {
     try {
-      const response = await fetch(`https://gateway.pinata.cloud/ipfs/${uri}`);
+      // Use backend proxy to avoid CORS issues
+      const response = await fetch(`http://localhost:3000/ipfs-metadata/${uri}`);
       if (response.ok) {
-        const metadata = await response.json();
-        return metadata;
+        const result = await response.json();
+        if (result.success && result.metadata) {
+          return result.metadata;
+        }
       }
     } catch (error) {
       console.error('Error fetching leak metadata:', error);
@@ -42,25 +50,48 @@ export const LeaksExplorer = () => {
     return null;
   };
 
-  // Fetch metadata for all leaks when they change
-  useEffect(() => {
-    const fetchAllMetadata = async () => {
-      if (derivedState?.leaks) {
-        const newMetadata = new Map<string, LeakMetadata>();
-        
-        for (const [id, leak] of derivedState.leaks) {
-          const metadata = await fetchLeakMetadata(leak.uri);
-          if (metadata) {
-            newMetadata.set(id.toString(), metadata);
+  // Manual update function for metadata using backend proxy only
+  const updateAllMetadata = async () => {
+    if (!derivedState?.leaks) return;
+    
+    setIsUpdatingMetadata(true);
+    const newMetadata = new Map<string, LeakMetadata>();
+    
+    try {
+      for (const [id, leak] of derivedState.leaks) {
+        try {
+          // Use only backend proxy to avoid CORS and rate limiting issues
+          const backendResponse = await fetch(`http://localhost:3000/ipfs-metadata/${leak.uri}`);
+          if (backendResponse.ok) {
+            const result = await backendResponse.json();
+            if (result.success && result.metadata) {
+              newMetadata.set(id.toString(), result.metadata);
+              console.log(`✅ Metadata fetched for leak ${id} via backend`);
+            }
+          } else {
+            console.log(`❌ Backend failed for leak ${id}: ${backendResponse.status}`);
           }
+        } catch (error) {
+          console.error(`Error fetching metadata for leak ${id}:`, error);
         }
         
-        setLeakMetadata(newMetadata);
+        // Add small delay to avoid overwhelming the backend
+        await new Promise(resolve => setTimeout(resolve, 200));
       }
-    };
+      
+      setLeakMetadata(newMetadata);
+      setLastUpdateTime(new Date());
+      console.log('✅ Metadata update completed via backend');
+    } catch (error) {
+      console.error('Error updating metadata:', error);
+    } finally {
+      setIsUpdatingMetadata(false);
+    }
+  };
 
-    fetchAllMetadata();
-  }, [derivedState?.leaks]);
+
+
+
 
   const formatLeakId = (id: bigint): string => {
     return id.toString();
@@ -87,6 +118,17 @@ export const LeaksExplorer = () => {
           <p className="text-xl text-muted-foreground">
             Browse all anonymous leaks submitted to the platform
           </p>
+          
+          {/* Info about metadata */}
+          <div className="mt-6 max-w-2xl mx-auto">
+            <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+              <p className="text-sm text-blue-700 dark:text-blue-300">
+                <strong>💡 Metadata Loading:</strong> Leak titles, descriptions, and TLD verification are stored on IPFS. 
+                Use the "Update Metadata" button to fetch this information through our secure backend proxy. 
+                This ensures reliable access without CORS issues or rate limiting.
+              </p>
+            </div>
+          </div>
         </div>
 
         {/* Stats Section */}
@@ -126,20 +168,45 @@ export const LeaksExplorer = () => {
         {/* Leaks List */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-2xl flex items-center gap-2">
-              <FileText className="w-6 h-6" />
-              All Submitted Leaks
-            </CardTitle>
-            <CardDescription>
-              Anonymous submissions protected by zero-knowledge proofs. Click on
-              URIs to access content.
-            </CardDescription>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="text-2xl flex items-center gap-2">
+                  <FileText className="w-6 h-6" />
+                  All Submitted Leaks
+                </CardTitle>
+                <CardDescription>
+                  Anonymous submissions protected by zero-knowledge proofs. Click on
+                  URIs to access content.
+                </CardDescription>
+              </div>
+              <div className="flex items-center gap-3">
+                {lastUpdateTime && (
+                  <p className="text-sm text-muted-foreground">
+                    Last updated: {lastUpdateTime.toLocaleTimeString()}
+                  </p>
+                )}
+                <Button
+                  onClick={updateAllMetadata}
+                  disabled={isUpdatingMetadata || !derivedState?.leaks}
+                  variant="outline"
+                  size="sm"
+                >
+                  <RefreshCw className={`w-4 h-4 mr-2 ${isUpdatingMetadata ? 'animate-spin' : ''}`} />
+                  {isUpdatingMetadata ? 'Updating...' : 'Update Metadata'}
+                </Button>
+              </div>
+            </div>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               {derivedState?.leaks && !derivedState.leaks.isEmpty() ? (
                 <div className="grid gap-6">
-                  {Array.from(derivedState.leaks).map(([id, leak]) => (
+                  {Array.from(derivedState.leaks)
+                    .sort(([idA], [idB]) => {
+                      // Sort by leak ID in descending order (newest first)
+                      return Number(idB) - Number(idA);
+                    })
+                    .map(([id, leak]) => (
                     <Card
                       key={formatLeakId(leak.id)}
                       className="border-l-4 border-l-primary hover:shadow-md transition-shadow"
@@ -148,27 +215,50 @@ export const LeaksExplorer = () => {
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                           {/* Leak Info */}
                           <div className="space-y-4">
-                            <div className="grid grid-cols-2 gap-4">
-                              <div>
-                                <p className="text-sm font-medium text-muted-foreground mb-1">
-                                  Leak ID
-                                </p>
-                                <p className="text-2xl font-bold text-primary">
-                                  #{formatLeakId(leak.id)}
-                                </p>
-                              </div>
-                              <div>
-                                <p className="text-sm font-medium text-muted-foreground mb-1">
-                                  File Size
-                                </p>
-                                <p className="text-2xl font-bold text-blue-600">
-                                  {leakMetadata.get(leak.id.toString())?.imagecid ? 'Available' : 'Loading...'}
-                                </p>
-                              </div>
+                            <div>
+                              <p className="text-sm font-medium text-muted-foreground mb-1">
+                                Leak ID
+                              </p>
+                              <p className="text-2xl font-bold text-primary">
+                                #{formatLeakId(leak.id)}
+                              </p>
                             </div>
 
+                            {/* TLD Verification Status */}
+                            {leakMetadata.get(leak.id.toString())?.tld && leakMetadata.get(leak.id.toString())?.emailVerified && (
+                              <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 p-4 rounded-lg">
+                                <div className="flex items-start gap-3">
+                                  <div className="flex-shrink-0">
+                                    <div className="w-8 h-8 bg-green-100 dark:bg-green-800 rounded-full flex items-center justify-center">
+                                      <Shield className="w-4 h-4 text-green-600 dark:text-green-400" />
+                                    </div>
+                                  </div>
+                                  <div className="flex-1">
+                                    <div className="flex items-center gap-2 mb-1">
+                                      <CheckCircle className="w-4 h-4 text-green-600" />
+                                      <p className="font-semibold text-green-800 dark:text-green-200">
+                                        Verified Organization
+                                      </p>
+                                    </div>
+                                    <p className="text-sm text-green-700 dark:text-green-300 mb-2">
+                                      This leak comes from a verified member of <strong>.{leakMetadata.get(leak.id.toString())?.tld}</strong> organization
+                                    </p>
+                                    <div className="flex items-center gap-4 text-xs text-green-600 dark:text-green-400">
+                                      <span className="flex items-center gap-1">
+                                        <Shield className="w-3 h-3" />
+                                        TLD: .{leakMetadata.get(leak.id.toString())?.tld}
+                                      </span>
+                                      <span>
+                                        Verified: {new Date(leakMetadata.get(leak.id.toString())?.verificationTimestamp || 0).toLocaleDateString()}
+                                      </span>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+
                             {/* Leak Title */}
-                            {leakMetadata.get(leak.id.toString())?.title && (
+                            {leakMetadata.get(leak.id.toString())?.title ? (
                               <div>
                                 <p className="text-sm font-medium text-muted-foreground mb-2">
                                   Title
@@ -179,10 +269,21 @@ export const LeaksExplorer = () => {
                                   </p>
                                 </div>
                               </div>
+                            ) : (
+                              <div>
+                                <p className="text-sm font-medium text-muted-foreground mb-2">
+                                  Title
+                                </p>
+                                <div className="bg-muted/50 p-3 rounded-lg border border-dashed">
+                                  <p className="text-sm text-muted-foreground">
+                                    Metadata not loaded. Click "Update Metadata" to fetch.
+                                  </p>
+                                </div>
+                              </div>
                             )}
 
                             {/* Leak Description */}
-                            {leakMetadata.get(leak.id.toString())?.description && (
+                            {leakMetadata.get(leak.id.toString())?.description ? (
                               <div>
                                 <p className="text-sm font-medium text-muted-foreground mb-2">
                                   Description
@@ -190,6 +291,17 @@ export const LeaksExplorer = () => {
                                 <div className="bg-muted p-3 rounded-lg">
                                   <p className="text-sm text-foreground">
                                     {leakMetadata.get(leak.id.toString())?.description}
+                                  </p>
+                                </div>
+                              </div>
+                            ) : (
+                              <div>
+                                <p className="text-sm font-medium text-muted-foreground mb-2">
+                                  Description
+                                </p>
+                                <div className="bg-muted/50 p-3 rounded-lg border border-dashed">
+                                  <p className="text-sm text-muted-foreground">
+                                    Metadata not loaded. Click "Update Metadata" to fetch.
                                   </p>
                                 </div>
                               </div>
