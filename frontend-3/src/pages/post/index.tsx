@@ -75,7 +75,7 @@ export const SubmitLeak = () => {
         </div>
 
         {/* 4. Add a UI section for developer controls. */}
-        <Card className="mb-8">
+        {/*<Card className="mb-8">
           <CardHeader>
             <CardTitle>Dev Controls (For Testing Only)</CardTitle>
             <CardDescription>
@@ -105,7 +105,7 @@ export const SubmitLeak = () => {
               </div>
             )}
           </CardContent>
-        </Card>
+        </Card>*/}
 
         {!deployedContractAPI && (
           <Card className="mb-8 border-orange-200 bg-orange-50 dark:bg-orange-900/20">

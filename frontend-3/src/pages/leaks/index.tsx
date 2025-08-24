@@ -1,7 +1,7 @@
 import { Loading } from "@/components/loading";
 import { useContractSubscription } from "@/modules/midnight/counter-ui";
 import { useEffect, useState } from "react";
-import { FileText, Search, ExternalLink } from "lucide-react";
+import { FileText, Search, ExternalLink, Copy } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -9,6 +9,7 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 export const LeaksExplorer = () => {
   const { derivedState } = useContractSubscription();
@@ -150,21 +151,34 @@ export const LeaksExplorer = () => {
                             <p className="text-sm font-medium text-muted-foreground mb-2">
                               Content URI
                             </p>
-                            <div
-                              className="bg-muted p-3 rounded-lg cursor-pointer hover:bg-muted/80 transition-colors group"
-                              onClick={() => handleUriClick(leak.uri)}
-                            >
-                              <div className="flex items-center justify-between">
-                                <p className="text-sm font-mono break-all group-hover:text-primary transition-colors">
-                                  {leak.uri}
-                                </p>
-                                <ExternalLink className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors ml-2 flex-shrink-0" />
-                              </div>
+                            <div className="bg-muted p-3 rounded-lg mb-3">
+                              <p className="text-sm font-mono break-all">
+                                {leak.uri}
+                              </p>
                             </div>
-                            <p className="text-xs text-muted-foreground mt-2">
-                              Click to access content (opens in new tab if URL,
-                              copies to clipboard otherwise)
-                            </p>
+                            <div className="flex gap-2">
+                              <a
+                                href={`https://gateway.pinata.cloud/ipfs/${leak.uri}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex-1"
+                              >
+                                <Button variant="outline" className="w-full">
+                                  <ExternalLink className="mr-2 h-4 w-4" />
+                                  Open on IPFS
+                                </Button>
+                              </a>
+                              <Button
+                                variant="secondary"
+                                onClick={() => {
+                                  navigator.clipboard.writeText(leak.uri);
+                                }}
+                                className="flex-1"
+                              >
+                                <Copy className="mr-2 h-4 w-4" />
+                                Copy CID
+                              </Button>
+                            </div>
                           </div>
                         </div>
                       </CardContent>
