@@ -13,6 +13,7 @@ export interface ContractControllerInterface {
   readonly deployedContractAddress: ContractAddress;   
   readonly state$: Observable<DerivedState>;
   increment: () => Promise<void>;
+  createLeak: (uri: string, donation_addr: string) => Promise<void>;
 }
 
 export class ContractController implements ContractControllerInterface {
@@ -31,7 +32,9 @@ export class ContractController implements ContractControllerInterface {
       return {
         round: value.round,
         privateState: value.privateState,
-        turns: value.turns,        
+        turns: value.turns,
+        leaks: value.leaks,
+        nextLeakId: value.nextLeakId,
       };
     };
     this.deployedContractAddress = deployedContract.deployTxData.public.contractAddress;
@@ -48,13 +51,15 @@ export class ContractController implements ContractControllerInterface {
           ),
           this.privateStates$,
         ),
-        Rx.concat(Rx.of<UserAction>({ increment: undefined }), this.turns$),
+        Rx.concat(Rx.of<UserAction>({ increment: undefined, createLeak: undefined }), this.turns$),
       ],
       (ledgerState, privateState, userActions) => {
         const result: DerivedState = {
           round: ledgerState.round,
           privateState: privateState,
           turns: userActions,
+          leaks: ledgerState.leaks,
+          nextLeakId: ledgerState.nextLeakId,
         };
         return result;
       },
@@ -69,7 +74,7 @@ export class ContractController implements ContractControllerInterface {
 
   async increment(): Promise<void> {
     this.logger?.info('incrementing counter');
-    this.turns$.next({ increment: 'incrementinng the counter' });
+    this.turns$.next({ increment: 'incrementinng the counter', createLeak: undefined });
 
     try {
       const txData = await this.deployedContract.callTx.increment();
@@ -82,14 +87,44 @@ export class ContractController implements ContractControllerInterface {
       });
       this.turns$.next({
         increment: undefined,
+        createLeak: undefined,
       });
     } catch (e) {
       this.turns$.next({
         increment: undefined,
+        createLeak: undefined,
       });
       throw e;
     }
   }
+
+  async createLeak(uri: string, donation_addr: string): Promise<void> {
+    this.logger?.info('creating leak');
+    this.turns$.next({ increment: undefined, createLeak: 'creating leak' });
+
+    try {
+      const txData = await this.deployedContract.callTx.createLeak(uri, donation_addr);
+      this.logger?.trace({
+        createLeak: {
+          message: 'creating leak - blockchain info',
+          txHash: txData.public.txHash,
+          blockHeight: txData.public.blockHeight,
+        },
+      });
+      this.turns$.next({
+        increment: undefined,
+        createLeak: undefined,
+      });
+    } catch (e) {
+      this.turns$.next({
+        increment: undefined,
+        createLeak: undefined,
+      });
+      throw e;
+    }
+  }
+
+
 
   static async deploy(
     contractPrivateStateId: typeof CounterPrivateStateId,    
