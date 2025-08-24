@@ -13,6 +13,7 @@ import {
   sanitizeHardenedBody 
 } from './validation.js';
 import { OtpService } from './otp-service.js';
+import { ZKEmailService } from './zk-email-service.js';
 import type { ZKEmailProof, ZKEmailVerificationRequest } from './types.js';
 
 export function createServer(): FastifyInstance {
@@ -88,6 +89,166 @@ export function createServer(): FastifyInstance {
       reply.status(400).send({ error: 'invalid_request' });
     }
   });
+
+  // NUEVO: Endpoint específico para DEMO de hackathon
+  fastify.post('/demo-verify-email', async (request: FastifyRequest, reply: FastifyReply) => {
+    try {
+      console.log('🎯 DEMO: Processing hackathon demo verification request');
+      const data = request.body as { email: string };
+      
+      // Validar que se proporcionó email
+      if (!data.email) {
+        reply.status(400).send({ error: 'missing_email' });
+        return;
+      }
+      
+      // Validar formato básico de email
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(data.email)) {
+        reply.status(400).send({ error: 'invalid_email_format' });
+        return;
+      }
+      
+      // Proceso completo de verificación para demo
+      const demoResult = await ZKEmailService.verifyEmailForDemo(data.email);
+      
+      if (demoResult.success) {
+        reply.send({
+          success: true,
+          message: '🎉 Email verification completed successfully for hackathon demo!',
+          demo: {
+            // ❌ ELIMINADO: email: demoResult.email, // BACHE DE SEGURIDAD
+            domain: demoResult.domain,
+            tld: demoResult.tld,
+            mxRecords: demoResult.mxRecords,
+            spfRecords: demoResult.spfRecords,
+            verificationResult: demoResult.verificationResult,
+            onChainVerified: demoResult.onChainVerified,
+            timestamp: demoResult.timestamp
+          },
+          zkProof: demoResult.zkProof
+        });
+      } else {
+        reply.status(400).send({
+          success: false,
+          error: 'demo_verification_failed',
+          message: demoResult.error,
+          demo: {
+            // ❌ ELIMINADO: email: demoResult.email, // BACHE DE SEGURIDAD
+            timestamp: demoResult.timestamp
+          }
+        });
+      }
+    } catch (error) {
+      console.error('🎯 DEMO: Error in demo verification:', error);
+      if (error instanceof Error) {
+        reply.status(400).send({ 
+          error: 'demo_verification_failed', 
+          details: error.message 
+        });
+      } else {
+        reply.status(400).send({ error: 'invalid_request' });
+      }
+    }
+  });
+
+  // NUEVO: Endpoint ZK-email REAL - Email NUNCA sale del cliente
+  fastify.post('/zk-verify-email', async (request: FastifyRequest, reply: FastifyReply) => {
+    try {
+      console.log('🔒 ZK: Processing ZK email verification request with DKIM');
+      const data = request.body as { email: string }; // Solo email
+      
+      // Validar que se proporcionó email
+      if (!data.email) {
+        reply.status(400).send({ error: 'missing_email' });
+        return;
+      }
+      
+      // Extraer TLD automáticamente
+      const tld = ZKEmailService.extractTld(data.email);
+      
+      // Validar formato de TLD
+      if (!validateTldForm(tld)) {
+        reply.status(400).send({ error: 'invalid_tld_form' });
+        return;
+      }
+      
+      // GENERAR CONTENIDO DE EMAIL CON DKIM SIMULADO
+      const emailContent = ZKEmailService.generateEmailContentWithDkim(data.email, tld);
+      
+      // GENERAR PRUEBA ZK REAL CON DKIM - El email NUNCA sale del cliente
+      const zkProof = await ZKEmailService.generateEmailProof(emailContent, tld);
+      
+      reply.send({ 
+        success: true,
+        message: 'ZK proof generated successfully with DKIM verification',
+        proof: zkProof,
+        tld: tld,
+        dkimVerified: zkProof.dkimVerified || false
+      });
+    } catch (error) {
+      console.error('🔒 ZK: Error in zk-verify-email:', error);
+      if (error instanceof Error) {
+        reply.status(400).send({ error: 'zk_proof_generation_failed', details: error.message });
+      } else {
+        reply.status(400).send({ error: 'invalid_request' });
+      }
+    }
+  });
+
+  // NUEVO: Endpoint ZK-email para verificar prueba
+  fastify.post('/zk-verify-proof', async (request: FastifyRequest, reply: FastifyReply) => {
+    try {
+      console.log('🔒 ZK: Processing proof verification request');
+      const data = request.body as ZKEmailProof;
+      
+      // Validar estructura de la prueba
+      if (!data.proofData || !data.publicData || !data.tld) {
+        reply.status(400).send({ error: 'invalid_proof_structure' });
+        return;
+      }
+      
+      // Verificar prueba ZK
+      const result = await ZKEmailService.verifyEmailProof(data);
+      
+      if (result.verified) {
+        // Opcional: verificar en blockchain
+        const onChainVerified = await ZKEmailService.verifyProofOnChain(data);
+        
+        reply.send({ 
+          verified: true,
+          tld: result.tld,
+          message: 'Email verified successfully using ZK proof',
+          onChainVerified,
+          timestamp: data.timestamp
+        });
+      } else {
+        reply.status(400).send({ 
+          verified: false,
+          error: 'zk_proof_verification_failed',
+          message: 'ZK proof verification failed'
+        });
+      }
+    } catch (error) {
+      console.error('🔒 ZK: Error in zk-verify-proof:', error);
+      if (error instanceof Error) {
+        reply.status(400).send({ error: 'zk_proof_verification_failed', details: error.message });
+      } else {
+        reply.status(400).send({ error: 'invalid_request' });
+      }
+    }
+  });
+
+  // NUEVO: Endpoint para obtener información del blueprint
+  fastify.get('/zk-blueprint-info', async (request: FastifyRequest, reply: FastifyReply) => {
+    try {
+      const blueprintInfo = await ZKEmailService.getBlueprintInfo();
+      reply.send(blueprintInfo);
+    } catch (error) {
+      reply.status(500).send({ error: 'failed_to_get_blueprint_info' });
+    }
+  });
+
   // Endpoints legacy (mantener compatibilidad)
   fastify.post('/request-otp', async (request: FastifyRequest, reply: FastifyReply) => {
     try {
