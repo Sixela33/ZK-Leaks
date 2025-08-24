@@ -65,6 +65,7 @@ export const Counter = () => {
               <FileText className="w-10 h-10 text-primary" />
             </div>
             <CardTitle className="text-2xl">ZK-Leaks Contract</CardTitle>
+            <PinataFileUpload onUploaded={() => {}} title={""} description={""} />
             <CardDescription className="max-w-md mx-auto">
               Deploy and interact with the ZK-Leaks smart contract for anonymous leak submissions
             </CardDescription>

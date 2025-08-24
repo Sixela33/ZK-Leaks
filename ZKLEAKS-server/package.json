@@ -27,11 +27,15 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@zk-email/sdk": "^2.0.1",
+    "@fastify/cors": "^11.1.0",
+    "@fastify/env": "^5.0.2",
+    "@fastify/multipart": "*",
+    "dotenv": "^17.2.1",
     "dotenv": "^16.6.1",
-    "fastify": "^4.24.3",
-    "nodemailer": "^7.0.5",
-    "uuid": "^11.1.0",
+    "fastify": "^5.5.0",
+    "pinata": "^2.5.0",
+    "nodemailer": "^6.9.7",
+    "uuid": "^9.0.1",
     "zod": "^3.22.4"
   },
   "devDependencies": {

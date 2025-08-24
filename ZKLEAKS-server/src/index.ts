@@ -4,6 +4,9 @@ import { createPinata } from './pinata.js';
 import cors from '@fastify/cors';
 import fastifyEnv from '@fastify/env';
 
+// Cargar variables de entorno
+config();
+
 const PORT = parseInt(process.env.PORT || '3000', 10);
 const HOST = '0.0.0.0';
 
@@ -28,7 +31,7 @@ async function start(): Promise<void> {
       dotenv: true,
     });
     server = createPinata(server);
-
+    
     await server.listen({ port: PORT, host: HOST });
     
     console.log(`🚀 Server running on http://${HOST}:${PORT}`);
