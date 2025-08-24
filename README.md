@@ -1,6 +1,10 @@
 <div align="center">
 
 # 🔒 zk-leaks 📰
+[App Video](https://drive.google.com/file/d/1MdcEJ7n2AR5RKidF_5E6_VH_JFmVc0WS/view?usp=sharing)
+[Presentation Video](https://drive.google.com/file/d/1LXKcxgecnPXHWtoAF833tfIC7PF1tJCG/view?usp=drive_link)
+[Slides](https://gamma.app/docs/The-Truth-Uncensored-on-Web3-pr4y5q2cz8abv6m)
+
 
 **Permanent Truth. Anonymous Support.**
 
