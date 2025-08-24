@@ -1,7 +1,7 @@
 import { Loading } from "@/components/loading";
 import { useContractSubscription } from "@/modules/midnight/counter-ui";
 import { useEffect, useState } from "react";
-import { FileText, Search, ExternalLink, Copy } from "lucide-react";
+import { Search, FileText, ExternalLink, Copy } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -11,9 +11,16 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
+interface LeakMetadata {
+  title: string;
+  description: string;
+  imagecid: string;
+}
+
 export const LeaksExplorer = () => {
-  const { derivedState } = useContractSubscription();
+  const { deployedContractAPI, derivedState, providers } = useContractSubscription();
   const [appLoading, setAppLoading] = useState(true);
+  const [leakMetadata, setLeakMetadata] = useState<Map<string, LeakMetadata>>(new Map());
 
   useEffect(() => {
     if (derivedState?.round !== undefined) {
@@ -21,11 +28,48 @@ export const LeaksExplorer = () => {
     }
   }, [derivedState?.round]);
 
-  const formatLeakId = (id: unknown) => {
-    return String(id);
+  // Function to fetch metadata from IPFS
+  const fetchLeakMetadata = async (uri: string): Promise<LeakMetadata | null> => {
+    try {
+      const response = await fetch(`https://gateway.pinata.cloud/ipfs/${uri}`);
+      if (response.ok) {
+        const metadata = await response.json();
+        return metadata;
+      }
+    } catch (error) {
+      console.error('Error fetching leak metadata:', error);
+    }
+    return null;
   };
 
-  const formatDonatedAmount = (amount: unknown) => {
+  // Fetch metadata for all leaks when they change
+  useEffect(() => {
+    const fetchAllMetadata = async () => {
+      if (derivedState?.leaks) {
+        const newMetadata = new Map<string, LeakMetadata>();
+        
+        for (const [id, leak] of derivedState.leaks) {
+          const metadata = await fetchLeakMetadata(leak.uri);
+          if (metadata) {
+            newMetadata.set(id.toString(), metadata);
+          }
+        }
+        
+        setLeakMetadata(newMetadata);
+      }
+    };
+
+    fetchAllMetadata();
+  }, [derivedState?.leaks]);
+
+  const formatLeakId = (id: bigint): string => {
+    return id.toString();
+  };
+
+  const formatDonatedAmount = (amount: bigint): string => {
+    if (amount === 0n) {
+      return "0";
+    }
     return String(amount);
   };
 
@@ -97,7 +141,7 @@ export const LeaksExplorer = () => {
                 <div className="grid gap-6">
                   {Array.from(derivedState.leaks).map(([id, leak]) => (
                     <Card
-                      key={formatLeakId(id)}
+                      key={formatLeakId(leak.id)}
                       className="border-l-4 border-l-primary hover:shadow-md transition-shadow"
                     >
                       <CardContent className="pt-6">
@@ -115,13 +159,41 @@ export const LeaksExplorer = () => {
                               </div>
                               <div>
                                 <p className="text-sm font-medium text-muted-foreground mb-1">
-                                  Donations Received
+                                  File Size
                                 </p>
-                                <p className="text-2xl font-bold text-green-600">
-                                  {formatDonatedAmount(leak.donated)}
+                                <p className="text-2xl font-bold text-blue-600">
+                                  {leakMetadata.get(leak.id.toString())?.imagecid ? 'Available' : 'Loading...'}
                                 </p>
                               </div>
                             </div>
+
+                            {/* Leak Title */}
+                            {leakMetadata.get(leak.id.toString())?.title && (
+                              <div>
+                                <p className="text-sm font-medium text-muted-foreground mb-2">
+                                  Title
+                                </p>
+                                <div className="bg-muted p-3 rounded-lg">
+                                  <p className="text-sm font-semibold text-foreground">
+                                    {leakMetadata.get(leak.id.toString())?.title}
+                                  </p>
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Leak Description */}
+                            {leakMetadata.get(leak.id.toString())?.description && (
+                              <div>
+                                <p className="text-sm font-medium text-muted-foreground mb-2">
+                                  Description
+                                </p>
+                                <div className="bg-muted p-3 rounded-lg">
+                                  <p className="text-sm text-foreground">
+                                    {leakMetadata.get(leak.id.toString())?.description}
+                                  </p>
+                                </div>
+                              </div>
+                            )}
 
                             <div>
                               <p className="text-sm font-medium text-muted-foreground mb-2">

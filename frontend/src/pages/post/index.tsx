@@ -19,6 +19,8 @@ export const SubmitLeak = () => {
 
   const [appLoading, setAppLoading] = useState(true);
   const [newLeakUri, setNewLeakUri] = useState("");
+  const [newLeakTitle, setNewLeakTitle] = useState("");
+  const [newLeakDescription, setNewLeakDescription] = useState("");
   const [newLeakDonationAddr, setNewLeakDonationAddr] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -29,11 +31,13 @@ export const SubmitLeak = () => {
   }, [derivedState?.round]);
 
   const createLeak = async () => {
-    if (deployedContractAPI && newLeakUri && newLeakDonationAddr) {
+    if (deployedContractAPI && newLeakUri && newLeakTitle && newLeakDescription && newLeakDonationAddr) {
       setIsSubmitting(true);
       try {
         await deployedContractAPI.createLeak(newLeakUri, newLeakDonationAddr);
         setNewLeakUri("");
+        setNewLeakTitle("");
+        setNewLeakDescription("");
         setNewLeakDonationAddr("");
       } catch (error) {
         console.error("Error creating leak:", error);
@@ -130,8 +134,10 @@ export const SubmitLeak = () => {
                   will be generated for the leak.
                 </p>
                 <PinataFileUpload
-                  onUploaded={(leakUri) => {
-                    setNewLeakUri(leakUri);
+                  onUploaded={(leakData) => {
+                    setNewLeakUri(leakData.uri);
+                    setNewLeakTitle(leakData.title);
+                    setNewLeakDescription(leakData.description);
                   }}
                   title="Upload Leak Document"
                   description="Choose a file to upload securely"
@@ -174,6 +180,8 @@ export const SubmitLeak = () => {
                   disabled={
                     !deployedContractAPI ||
                     !newLeakUri ||
+                    !newLeakTitle ||
+                    !newLeakDescription ||
                     !newLeakDonationAddr ||
                     isSubmitting
                   }
