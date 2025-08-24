@@ -18,7 +18,7 @@ interface LeakMetadata {
 }
 
 export const LeaksExplorer = () => {
-  const { deployedContractAPI, derivedState, providers } = useContractSubscription();
+  const { derivedState} = useContractSubscription();
   const [appLoading, setAppLoading] = useState(true);
   const [leakMetadata, setLeakMetadata] = useState<Map<string, LeakMetadata>>(new Map());
 
@@ -66,12 +66,17 @@ export const LeaksExplorer = () => {
     return id.toString();
   };
 
+  /**
+   * 
+   * @param amount 
+   * @returns 
   const formatDonatedAmount = (amount: bigint): string => {
     if (amount === 0n) {
       return "0";
     }
     return String(amount);
   };
+  */
 
   return (
     <div className="min-h-screen bg-background py-12 px-4 sm:px-6 lg:px-8">
@@ -139,7 +144,7 @@ export const LeaksExplorer = () => {
             <div className="space-y-4">
               {derivedState?.leaks && !derivedState.leaks.isEmpty() ? (
                 <div className="grid gap-6">
-                  {Array.from(derivedState.leaks).map(([id, leak]) => (
+                  {Array.from(derivedState.leaks).map(([_, leak]) => (
                     <Card
                       key={formatLeakId(leak.id)}
                       className="border-l-4 border-l-primary hover:shadow-md transition-shadow"

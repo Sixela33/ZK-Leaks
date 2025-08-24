@@ -160,6 +160,15 @@ compact check  # Should show latest version
    npm run run-proof-server-testnet
    ```
 
+### Setup IPFS
+
+1. **Get your credentials**
+
+Log into ipfs and get your credentials
+
+2. **Complete the .env file in the backend folder**
+  Complete the .env file with your newli aquired credentials
+
 <div align="center">
 Made with ❤️ for the Midnight Hackathon.
 </div>
