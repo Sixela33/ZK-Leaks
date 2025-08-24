@@ -60,28 +60,34 @@ const _descriptor_6 = new _ContractAddress_0();
 
 const _descriptor_7 = new __compactRuntime.CompactTypeUnsignedInteger(255n, 1);
 
+const _descriptor_8 = new __compactRuntime.CompactTypeUnsignedInteger(340282366920938463463374607431768211455n, 16);
+
 class Contract {
   witnesses;
   constructor(...args_0) {
-    if (args_0.length !== 1)
+    if (args_0.length !== 1) {
       throw new __compactRuntime.CompactError(`Contract constructor: expected 1 argument, received ${args_0.length}`);
+    }
     const witnesses_0 = args_0[0];
-    if (typeof(witnesses_0) !== 'object')
+    if (typeof(witnesses_0) !== 'object') {
       throw new __compactRuntime.CompactError('first (witnesses) argument to Contract constructor is not an object');
+    }
     this.witnesses = witnesses_0;
     this.circuits = {
       createLeak: (...args_1) => {
-        if (args_1.length !== 3)
+        if (args_1.length !== 3) {
           throw new __compactRuntime.CompactError(`createLeak: expected 3 arguments (as invoked from Typescript), received ${args_1.length}`);
+        }
         const contextOrig_0 = args_1[0];
         const uri_0 = args_1[1];
         const donation_addr_0 = args_1[2];
-        if (!(typeof(contextOrig_0) === 'object' && contextOrig_0.originalState != undefined && contextOrig_0.transactionContext != undefined))
+        if (!(typeof(contextOrig_0) === 'object' && contextOrig_0.originalState != undefined && contextOrig_0.transactionContext != undefined)) {
           __compactRuntime.type_error('createLeak',
                                       'argument 1 (as invoked from Typescript)',
                                       'counter.compact line 24 char 1',
                                       'CircuitContext',
                                       contextOrig_0)
+        }
         const context = { ...contextOrig_0 };
         const partialProofData = {
           input: {
@@ -92,30 +98,33 @@ class Contract {
           publicTranscript: [],
           privateTranscriptOutputs: []
         };
-        const result_0 = this.#_createLeak_0(context,
-                                             partialProofData,
-                                             uri_0,
-                                             donation_addr_0);
+        const result_0 = this._createLeak_0(context,
+                                            partialProofData,
+                                            uri_0,
+                                            donation_addr_0);
         partialProofData.output = { value: [], alignment: [] };
         return { result: result_0, context: context, proofData: partialProofData };
       },
       getLeak: (...args_1) => {
-        if (args_1.length !== 2)
+        if (args_1.length !== 2) {
           throw new __compactRuntime.CompactError(`getLeak: expected 2 arguments (as invoked from Typescript), received ${args_1.length}`);
+        }
         const contextOrig_0 = args_1[0];
         const id_0 = args_1[1];
-        if (!(typeof(contextOrig_0) === 'object' && contextOrig_0.originalState != undefined && contextOrig_0.transactionContext != undefined))
+        if (!(typeof(contextOrig_0) === 'object' && contextOrig_0.originalState != undefined && contextOrig_0.transactionContext != undefined)) {
           __compactRuntime.type_error('getLeak',
                                       'argument 1 (as invoked from Typescript)',
                                       'counter.compact line 37 char 1',
                                       'CircuitContext',
                                       contextOrig_0)
-        if (!(typeof(id_0) === 'bigint' && id_0 >= 0 && id_0 <= 18446744073709551615n))
+        }
+        if (!(typeof(id_0) === 'bigint' && id_0 >= 0n && id_0 <= 18446744073709551615n)) {
           __compactRuntime.type_error('getLeak',
                                       'argument 1 (argument 2 as invoked from Typescript)',
                                       'counter.compact line 37 char 1',
                                       'Uint<0..18446744073709551615>',
                                       id_0)
+        }
         const context = { ...contextOrig_0 };
         const partialProofData = {
           input: {
@@ -126,20 +135,22 @@ class Contract {
           publicTranscript: [],
           privateTranscriptOutputs: []
         };
-        const result_0 = this.#_getLeak_0(context, partialProofData, id_0);
+        const result_0 = this._getLeak_0(context, partialProofData, id_0);
         partialProofData.output = { value: _descriptor_3.toValue(result_0), alignment: _descriptor_3.alignment() };
         return { result: result_0, context: context, proofData: partialProofData };
       },
       increment: (...args_1) => {
-        if (args_1.length !== 1)
+        if (args_1.length !== 1) {
           throw new __compactRuntime.CompactError(`increment: expected 1 argument (as invoked from Typescript), received ${args_1.length}`);
+        }
         const contextOrig_0 = args_1[0];
-        if (!(typeof(contextOrig_0) === 'object' && contextOrig_0.originalState != undefined && contextOrig_0.transactionContext != undefined))
+        if (!(typeof(contextOrig_0) === 'object' && contextOrig_0.originalState != undefined && contextOrig_0.transactionContext != undefined)) {
           __compactRuntime.type_error('increment',
                                       'argument 1 (as invoked from Typescript)',
                                       'counter.compact line 43 char 1',
                                       'CircuitContext',
                                       contextOrig_0)
+        }
         const context = { ...contextOrig_0 };
         const partialProofData = {
           input: { value: [], alignment: [] },
@@ -147,20 +158,22 @@ class Contract {
           publicTranscript: [],
           privateTranscriptOutputs: []
         };
-        const result_0 = this.#_increment_0(context, partialProofData);
+        const result_0 = this._increment_0(context, partialProofData);
         partialProofData.output = { value: [], alignment: [] };
         return { result: result_0, context: context, proofData: partialProofData };
       },
       decrement: (...args_1) => {
-        if (args_1.length !== 1)
+        if (args_1.length !== 1) {
           throw new __compactRuntime.CompactError(`decrement: expected 1 argument (as invoked from Typescript), received ${args_1.length}`);
+        }
         const contextOrig_0 = args_1[0];
-        if (!(typeof(contextOrig_0) === 'object' && contextOrig_0.originalState != undefined && contextOrig_0.transactionContext != undefined))
+        if (!(typeof(contextOrig_0) === 'object' && contextOrig_0.originalState != undefined && contextOrig_0.transactionContext != undefined)) {
           __compactRuntime.type_error('decrement',
                                       'argument 1 (as invoked from Typescript)',
                                       'counter.compact line 47 char 1',
                                       'CircuitContext',
                                       contextOrig_0)
+        }
         const context = { ...contextOrig_0 };
         const partialProofData = {
           input: { value: [], alignment: [] },
@@ -168,7 +181,7 @@ class Contract {
           publicTranscript: [],
           privateTranscriptOutputs: []
         };
-        const result_0 = this.#_decrement_0(context, partialProofData);
+        const result_0 = this._decrement_0(context, partialProofData);
         partialProofData.output = { value: [], alignment: [] };
         return { result: result_0, context: context, proofData: partialProofData };
       }
@@ -181,8 +194,9 @@ class Contract {
     };
   }
   initialState(...args_0) {
-    if (args_0.length !== 1)
+    if (args_0.length !== 1) {
       throw new __compactRuntime.CompactError(`Contract state constructor: expected 1 argument (as invoked from Typescript), received ${args_0.length}`);
+    }
     const constructorContext_0 = args_0[0];
     if (typeof(constructorContext_0) !== 'object') {
       throw new __compactRuntime.CompactError(`Contract state constructor: expected 'constructorContext' in argument 1 (as invoked from Typescript) to be an object`);
@@ -253,7 +267,7 @@ class Contract {
       currentZswapLocalState: context.currentZswapLocalState
     }
   }
-  #_createLeak_0(context, partialProofData, uri_0, donation_addr_0) {
+  _createLeak_0(context, partialProofData, uri_0, donation_addr_0) {
     const newLeak_0 = { id:
                           _descriptor_1.fromValue(Contract._query(context,
                                                                   partialProofData,
@@ -333,7 +347,7 @@ class Contract {
                      { ins: { cached: true, n: 1 } }]);
     return [];
   }
-  #_getLeak_0(context, partialProofData, id_0) {
+  _getLeak_0(context, partialProofData, id_0) {
     __compactRuntime.assert(_descriptor_4.fromValue(Contract._query(context,
                                                                     partialProofData,
                                                                     [
@@ -370,7 +384,7 @@ class Contract {
                                                     { popeq: { cached: false,
                                                                result: undefined } }]).value);
   }
-  #_increment_0(context, partialProofData) {
+  _increment_0(context, partialProofData) {
     const tmp_0 = 1n;
     Contract._query(context,
                     partialProofData,
@@ -389,7 +403,7 @@ class Contract {
                      { ins: { cached: true, n: 1 } }]);
     return [];
   }
-  #_decrement_0(context, partialProofData) {
+  _decrement_0(context, partialProofData) {
     const tmp_0 = 1n;
     Contract._query(context,
                     partialProofData,
@@ -449,8 +463,9 @@ function ledger(state) {
   return {
     leaks: {
       isEmpty(...args_0) {
-        if (args_0.length !== 0)
+        if (args_0.length !== 0) {
           throw new __compactRuntime.CompactError(`isEmpty: expected 0 arguments, received ${args_0.length}`);
+        }
         return _descriptor_4.fromValue(Contract._query(context,
                                                        partialProofData,
                                                        [
@@ -470,8 +485,9 @@ function ledger(state) {
                                                                    result: undefined } }]).value);
       },
       size(...args_0) {
-        if (args_0.length !== 0)
+        if (args_0.length !== 0) {
           throw new __compactRuntime.CompactError(`size: expected 0 arguments, received ${args_0.length}`);
+        }
         return _descriptor_1.fromValue(Contract._query(context,
                                                        partialProofData,
                                                        [
@@ -487,15 +503,17 @@ function ledger(state) {
                                                                    result: undefined } }]).value);
       },
       member(...args_0) {
-        if (args_0.length !== 1)
+        if (args_0.length !== 1) {
           throw new __compactRuntime.CompactError(`member: expected 1 argument, received ${args_0.length}`);
+        }
         const key_0 = args_0[0];
-        if (!(typeof(key_0) === 'bigint' && key_0 >= 0 && key_0 <= 18446744073709551615n))
+        if (!(typeof(key_0) === 'bigint' && key_0 >= 0n && key_0 <= 18446744073709551615n)) {
           __compactRuntime.type_error('member',
                                       'argument 1',
                                       'counter.compact line 13 char 1',
                                       'Uint<0..18446744073709551615>',
                                       key_0)
+        }
         return _descriptor_4.fromValue(Contract._query(context,
                                                        partialProofData,
                                                        [
@@ -514,15 +532,17 @@ function ledger(state) {
                                                                    result: undefined } }]).value);
       },
       lookup(...args_0) {
-        if (args_0.length !== 1)
+        if (args_0.length !== 1) {
           throw new __compactRuntime.CompactError(`lookup: expected 1 argument, received ${args_0.length}`);
+        }
         const key_0 = args_0[0];
-        if (!(typeof(key_0) === 'bigint' && key_0 >= 0 && key_0 <= 18446744073709551615n))
+        if (!(typeof(key_0) === 'bigint' && key_0 >= 0n && key_0 <= 18446744073709551615n)) {
           __compactRuntime.type_error('lookup',
                                       'argument 1',
                                       'counter.compact line 13 char 1',
                                       'Uint<0..18446744073709551615>',
                                       key_0)
+        }
         return _descriptor_3.fromValue(Contract._query(context,
                                                        partialProofData,
                                                        [
@@ -543,8 +563,9 @@ function ledger(state) {
                                                                    result: undefined } }]).value);
       },
       [Symbol.iterator](...args_0) {
-        if (args_0.length !== 0)
+        if (args_0.length !== 0) {
           throw new __compactRuntime.CompactError(`iter: expected 0 arguments, received ${args_0.length}`);
+        }
         const self_0 = state.asArray()[0];
         return self_0.asMap().keys().map(  (key) => {    const value = self_0.asMap().get(key).asCell();    return [      _descriptor_1.fromValue(key.value),      _descriptor_3.fromValue(value.value)    ];  })[Symbol.iterator]();
       }
@@ -584,7 +605,7 @@ const _emptyContext = {
   transactionContext: new __compactRuntime.QueryContext(new __compactRuntime.ContractState().data, __compactRuntime.dummyContractAddress())
 };
 const _dummyContract = new Contract({ });
-const pureCircuits = { };
+const pureCircuits = {};
 const contractReferenceLocations = { tag: 'publicLedgerArray', indices: { } };
 exports.Contract = Contract;
 exports.ledger = ledger;

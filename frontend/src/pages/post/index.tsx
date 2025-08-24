@@ -1,7 +1,7 @@
 import { Loading } from "@/components/loading";
 import { useContractSubscription } from "@/modules/midnight/counter-ui";
 import { useEffect, useState } from "react";
-import { FileText, Upload } from "lucide-react";
+import { FileText, Upload, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -22,6 +22,7 @@ export const SubmitLeak = () => {
   const [newLeakTitle, setNewLeakTitle] = useState("");
   const [newLeakDescription, setNewLeakDescription] = useState("");
   const [newLeakDonationAddr, setNewLeakDonationAddr] = useState("");
+  const [newLeakTld, setNewLeakTld] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
@@ -31,7 +32,13 @@ export const SubmitLeak = () => {
   }, [derivedState?.round]);
 
   const createLeak = async () => {
-    if (deployedContractAPI && newLeakUri && newLeakTitle && newLeakDescription && newLeakDonationAddr) {
+    if (
+      deployedContractAPI &&
+      newLeakUri &&
+      newLeakTitle &&
+      newLeakDescription &&
+      newLeakDonationAddr
+    ) {
       setIsSubmitting(true);
       try {
         await deployedContractAPI.createLeak(newLeakUri, newLeakDonationAddr);
@@ -39,6 +46,7 @@ export const SubmitLeak = () => {
         setNewLeakTitle("");
         setNewLeakDescription("");
         setNewLeakDonationAddr("");
+        setNewLeakTld("");
       } catch (error) {
         console.error("Error creating leak:", error);
       } finally {
@@ -138,6 +146,7 @@ export const SubmitLeak = () => {
                     setNewLeakUri(leakData.uri);
                     setNewLeakTitle(leakData.title);
                     setNewLeakDescription(leakData.description);
+                    setNewLeakTld(leakData.tld || "");
                   }}
                   title="Upload Leak Document"
                   description="Choose a file to upload securely"
@@ -150,6 +159,12 @@ export const SubmitLeak = () => {
                     <p className="text-xs text-green-600 dark:text-green-400 font-mono break-all mt-1">
                       {newLeakUri}
                     </p>
+                    {newLeakTld && (
+                      <div className="mt-2 flex items-center gap-2 text-xs text-green-600 dark:text-green-400">
+                        <Mail className="w-3 h-3" />
+                        <span>TLD verificado: {newLeakTld}</span>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>

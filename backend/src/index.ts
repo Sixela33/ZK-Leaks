@@ -31,9 +31,9 @@ async function start(): Promise<void> {
       dotenv: true,
     });
     server = createPinata(server);
-    
+
     await server.listen({ port: PORT, host: HOST });
-    
+
     console.log(`🚀 Server running on http://${HOST}:${PORT}`);
     console.log(`📧 Mode: ${process.env.NODE_ENV || 'development'}`);
   } catch (err) {
