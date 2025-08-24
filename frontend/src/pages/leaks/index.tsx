@@ -29,17 +29,6 @@ export const LeaksExplorer = () => {
     return String(amount);
   };
 
-  const handleUriClick = (uri: string) => {
-    // If it's a valid URL, open it in a new tab
-    try {
-      new URL(uri);
-      window.open(uri, "_blank");
-    } catch {
-      // If not a valid URL, copy to clipboard
-      navigator.clipboard.writeText(uri);
-    }
-  };
-
   return (
     <div className="min-h-screen bg-background py-12 px-4 sm:px-6 lg:px-8">
       {appLoading && <Loading />}

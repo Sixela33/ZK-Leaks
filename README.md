@@ -131,9 +131,9 @@ compact check  # Should show latest version
 ## 📁 Project Structure
 
 ```
-├── counter-cli/         # CLI tools
-├── counter-contract/    # Smart contracts
-└── frontend-vite-react/ # React front-end application
+├── cli/                 # CLI tools
+├── contract/            # Smart contracts
+└── frontend/            # React front-end application
 ```
 
 ## 🔗 HOW TO RUN
@@ -141,7 +141,7 @@ compact check  # Should show latest version
 ### Testnet Network
 
 1. **Set Network ID**
-   - Open `frontend-vite-react/src/App.tsx`
+   - Open `frontend/src/App.tsx`
    - Ensure `setNetworkId(NetworkId.TestNet)` is set
 
 2. **Configure Contract Address**
@@ -156,8 +156,8 @@ compact check  # Should show latest version
    npm run start-app-testnet
 
    # In another terminal (from project root)
-   cd counter-cli
-   npm run start-app-undeployed
+   cd cli
+   npm run run-proof-server-testnet
    ```
 
 <div align="center">

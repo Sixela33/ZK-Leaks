@@ -1,7 +1,7 @@
 import { Loading } from "@/components/loading";
 import { useContractSubscription } from "@/modules/midnight/counter-ui";
 import { useEffect, useState } from "react";
-import { FileText, Upload, PlusCircle } from "lucide-react"; // Import PlusCircle
+import { FileText, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -13,8 +13,8 @@ import {
 import PinataFileUpload from "@/components/pinataFileUpload";
 
 export const SubmitLeak = () => {
-  // 1. Destructure `onDeploy` from the hook to access the deployment function.
-  const { deployedContractAPI, derivedState, providers, onDeploy } =
+  // Destructure the hook to access the contract functionality
+  const { deployedContractAPI, derivedState, providers } =
     useContractSubscription();
 
   const [appLoading, setAppLoading] = useState(true);
@@ -22,26 +22,11 @@ export const SubmitLeak = () => {
   const [newLeakDonationAddr, setNewLeakDonationAddr] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // 2. Add state to hold and display the address of a newly deployed contract.
-  const [deployedAddress, setDeployedAddress] = useState<string | undefined>();
-
   useEffect(() => {
     if (derivedState?.round !== undefined) {
       setAppLoading(false);
     }
   }, [derivedState?.round]);
-
-  // 3. Create a handler function to trigger the deployment.
-  const handleDeploy = async () => {
-    console.log("Deploying new contract for development...");
-    const { address } = await onDeploy(); // Call the deployment function from the hook
-    if (address) {
-      setDeployedAddress(address);
-      console.log(
-        `New contract deployed at: ${address}. Please refresh to interact.`,
-      );
-    }
-  };
 
   const createLeak = async () => {
     if (deployedContractAPI && newLeakUri && newLeakDonationAddr) {
