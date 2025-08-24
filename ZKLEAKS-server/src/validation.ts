@@ -4,6 +4,16 @@ export const TldSchema = z.object({ tld: z.string().min(1).max(253) }).strict();
 
 export const HardenedSchema = z.object({ tld: z.string().min(1).max(253) }).passthrough();
 
+// Esquemas para el flujo de OTP
+export const EmailVerificationSchema = z.object({
+  email: z.string().email('Invalid email format')
+}).strict();
+
+export const OtpVerificationSchema = z.object({
+  sessionId: z.string().uuid('Invalid session ID'),
+  otp: z.string().length(6, 'OTP must be 6 digits').regex(/^\d{6}$/, 'OTP must contain only digits')
+}).strict();
+
 export function normalizeTld(input: string): string {
   return input.trim().toLowerCase().replace(/^\./, '');
 }
