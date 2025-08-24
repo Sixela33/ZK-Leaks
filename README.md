@@ -1,4 +1,3 @@
-
 <div align="center">
 
 # 🔒 zk-leaks 📰
@@ -160,4 +159,8 @@ compact check  # Should show latest version
 
 <div align="center">
 Made with ❤️ for the Midnight Hackathon.
+<<<<<<< HEAD
 </div>
+=======
+</div>
+>>>>>>> 14c45a3 (Readme updated)
