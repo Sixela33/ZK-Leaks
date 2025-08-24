@@ -68,6 +68,17 @@ function PinataFileUpload({
   const [verificationResult, setVerificationResult] =
     useState<EmailVerificationResult | null>(null);
 
+  const clearForm = () => {
+    setFile(null);
+    setUploadStatus("");
+    setUri("");
+    setLeakTitle("");
+    setLeakDescription("");
+    setEmail("");
+    setEmailVerificationStatus("idle");
+    setVerificationResult(null);
+  };
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       setFile(e.target.files[0]);
@@ -212,6 +223,10 @@ function PinataFileUpload({
           description: leakDescription,
           tld: verificationResult?.tld,
         });
+        // Limpiar el formulario después de un upload exitoso
+        setTimeout(() => {
+          clearForm();
+        }, 2000); // Esperar 2 segundos para que el usuario vea el mensaje de éxito
       } else {
         setUploadStatus("Upload failed");
       }

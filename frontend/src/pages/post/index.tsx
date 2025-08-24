@@ -11,11 +11,13 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import PinataFileUpload from "@/components/pinataFileUpload";
+import { useNavigate } from "react-router-dom";
 
 export const SubmitLeak = () => {
   // Destructure the hook to access the contract functionality
   const { deployedContractAPI, derivedState, providers } =
     useContractSubscription();
+  const navigate = useNavigate();
 
   const [appLoading, setAppLoading] = useState(true);
   const [newLeakUri, setNewLeakUri] = useState("");
@@ -42,11 +44,16 @@ export const SubmitLeak = () => {
       setIsSubmitting(true);
       try {
         await deployedContractAPI.createLeak(newLeakUri, newLeakDonationAddr);
+
+        // Limpiar el formulario
         setNewLeakUri("");
         setNewLeakTitle("");
         setNewLeakDescription("");
         setNewLeakDonationAddr("");
         setNewLeakTld("");
+
+        // Redirigir al inicio
+        navigate("/");
       } catch (error) {
         console.error("Error creating leak:", error);
       } finally {
