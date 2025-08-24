@@ -23,7 +23,7 @@ export const MidnightWallet = () => {
       <div>
         {!hasConnectedWallet ? (
           <DialogTrigger asChild>
-            <Button variant="outline" className="">
+            <Button variant="outline" className="text-black">
               Connect Wallet
             </Button>
           </DialogTrigger>

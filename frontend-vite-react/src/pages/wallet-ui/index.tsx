@@ -1,4 +1,3 @@
-import { MidnightWallet } from "@/modules/midnight/wallet-widget";
 import { useAssets, useWallet } from "@meshsdk/midnight-react";
 import { ModeToggle } from "@/components/mode-toggle";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -41,7 +40,7 @@ export function WalletUI() {
               <CardDescription>Interact with your wallet</CardDescription>
             </CardHeader>
             <CardContent>
-              <MidnightWallet />
+              
             </CardContent>
           </Card>
 
