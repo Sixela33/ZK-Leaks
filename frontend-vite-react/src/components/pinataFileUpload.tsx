@@ -1,4 +1,5 @@
-import { useState } from 'react'
+'use client'
+import { useEffect, useState } from 'react'
 import { PinataSDK } from 'pinata'
 import { axiosInstance } from '@/lib/axios'
 
@@ -16,6 +17,7 @@ interface PinataFileUploadProps {
 function PinataFileUpload({onUploaded, title, description}: PinataFileUploadProps) {
   const [file, setFile] = useState<File | null>(null)
   const [uploadStatus, setUploadStatus] = useState('')
+  const [uri, setUri] = useState('')
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
@@ -52,11 +54,12 @@ function PinataFileUpload({onUploaded, title, description}: PinataFileUploadProp
       if (upload.cid) {
         setUploadStatus('File uploaded successfully!')
         handleUploadJson(upload.cid)
+        setUri(upload.cid)
       } else {
         setUploadStatus('Upload failed')
       }
     } catch (error) {
-      setUploadStatus(`Error: ${error instanceof Error ? error.message : String(error)}`)
+      setUploadStatus(`Error: ${error instanceof Error ? error.message : String(error)} [Is the server running?]`)
     }
   }
 
@@ -81,6 +84,31 @@ function PinataFileUpload({onUploaded, title, description}: PinataFileUploadProp
     }
   }
 
+
+  const readUri = async () => {
+    try {
+      const response = await axiosInstance.get(`/read_uri/${uri}`)
+      console.log(response)
+
+      const file = response.data.file
+      console.log(file)
+
+      const url = file.url
+      console.log(url)
+
+      const image = new Image()
+      image.src = url
+    } catch (error) {
+      // setUploadStatus(`Error: ${error instanceof Error ? error.message : String(error)}`)
+    }
+  }
+
+  useEffect(() => {
+    if (uri) {
+      readUri()
+    }
+  }, [uri])
+
   return (
     <>
       <div>
@@ -88,10 +116,11 @@ function PinataFileUpload({onUploaded, title, description}: PinataFileUploadProp
       <h1>Pinata File Upload</h1>
       <div className="card">
         <input type="file" onChange={handleFileChange} />
-        <button onClick={handleUploadImage} disabled={!file}>
+        <button className="bg-black text-white p-2 rounded-md" onClick={handleUploadImage} disabled={!file}>
           Upload to Pinata
         </button>
         {uploadStatus && <p>{uploadStatus}</p>}
+        {file && <img src={file.name} alt={file.name} />}
       </div>
     </>
   )
