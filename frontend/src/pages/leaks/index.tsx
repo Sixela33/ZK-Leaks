@@ -311,35 +311,73 @@ export const LeaksExplorer = () => {
                           {/* Content Access */}
                           <div>
                             <p className="text-sm font-medium text-muted-foreground mb-2">
-                              Content URI
+                              Content Access
                             </p>
-                            <div className="bg-muted p-3 rounded-lg mb-3">
-                              <p className="text-sm font-mono break-all">
-                                {leak.uri}
-                              </p>
+                            <div className="space-y-3 mb-3">
+                              <div>
+                                <p className="text-xs font-medium text-muted-foreground mb-1">
+                                  Metadata JSON CID:
+                                </p>
+                                <div className="bg-muted p-2 rounded-lg">
+                                  <p className="text-xs font-mono break-all">
+                                    {leak.uri}
+                                  </p>
+                                </div>
+                              </div>
+                              {leakMetadata.get(leak.id.toString())?.imagecid && (
+                                <div>
+                                  <p className="text-xs font-medium text-muted-foreground mb-1">
+                                    File CID:
+                                  </p>
+                                  <div className="bg-muted p-2 rounded-lg">
+                                    <p className="text-xs font-mono break-all">
+                                      {leakMetadata.get(leak.id.toString())?.imagecid}
+                                    </p>
+                                  </div>
+                                </div>
+                              )}
                             </div>
-                            <div className="flex gap-2">
-                              <a
-                                href={`https://gateway.pinata.cloud/ipfs/${leak.uri}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex-1"
-                              >
-                                <Button variant="outline" className="w-full">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                              {leakMetadata.get(leak.id.toString())?.imagecid ? (
+                                <a
+                                  href={`https://gateway.pinata.cloud/ipfs/${leakMetadata.get(leak.id.toString())?.imagecid}`}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="col-span-1 sm:col-span-2"
+                                >
+                                  <Button variant="outline" className="w-full">
+                                    <ExternalLink className="mr-2 h-4 w-4" />
+                                    Open File on IPFS
+                                  </Button>
+                                </a>
+                              ) : (
+                                <Button variant="outline" className="w-full col-span-1 sm:col-span-2" disabled>
                                   <ExternalLink className="mr-2 h-4 w-4" />
-                                  Open on IPFS
+                                  Load Metadata First
                                 </Button>
-                              </a>
+                              )}
                               <Button
                                 variant="secondary"
                                 onClick={() => {
                                   navigator.clipboard.writeText(leak.uri);
                                 }}
-                                className="flex-1"
+                                className="w-full"
                               >
                                 <Copy className="mr-2 h-4 w-4" />
-                                Copy CID
+                                Copy Metadata CID
                               </Button>
+                              {leakMetadata.get(leak.id.toString())?.imagecid && (
+                                <Button
+                                  variant="secondary"
+                                  onClick={() => {
+                                    navigator.clipboard.writeText(leakMetadata.get(leak.id.toString())?.imagecid || '');
+                                  }}
+                                  className="w-full"
+                                >
+                                  <Copy className="mr-2 h-4 w-4" />
+                                  Copy File CID
+                                </Button>
+                              )}
                             </div>
                           </div>
                         </div>
