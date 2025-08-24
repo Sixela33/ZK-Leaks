@@ -1,42 +1,54 @@
 {
   "name": "zkleaks-tld-validator",
   "version": "1.0.0",
-  "description": "Microservicio para validación de TLD con privacidad garantizada",
+  "description": "Microservicio para validación de TLD con privacidad garantizada usando ZK-email",
   "main": "dist/index.js",
   "type": "module",
   "scripts": {
     "dev": "tsx watch src/index.ts",
-    "demo": "tsx watch src/index.ts",
+    "demo": "node --loader ts-node/esm src/index.ts",
     "build": "tsc -p tsconfig.json",
     "start": "node --enable-source-maps dist/index.js",
     "lint": "eslint src/**/*.ts",
-    "format": "prettier --write src/**/*.ts"
+    "format": "prettier --write src/**/*.ts",
+    "test-demo": "node test-demo.js",
+    "demo-logs": "node demo-with-logs.js",
+    "hackathon-demo": "npm run dev & sleep 3 && npm run test-demo"
   },
   "keywords": [
     "tld",
     "validation",
     "privacy",
     "microservice",
-    "otp",
-    "email-verification"
+    "zk-email",
+    "zero-knowledge",
+    "cryptography"
   ],
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "@fastify/cors": "^11.1.0",
+    "@fastify/env": "^5.0.2",
+    "@fastify/multipart": "*",
+    "dotenv": "^17.2.1",
     "dotenv": "^16.6.1",
-    "fastify": "^4.24.3",
+    "fastify": "^5.5.0",
+    "pinata": "^2.5.0",
     "nodemailer": "^6.9.7",
     "uuid": "^9.0.1",
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@types/dotenv": "^8.2.3",
     "@types/node": "^20.10.0",
-    "@types/nodemailer": "^6.4.14",
-    "@types/uuid": "^9.0.7",
+    "@types/nodemailer": "^7.0.1",
+    "@types/uuid": "^10.0.0",
     "@typescript-eslint/eslint-plugin": "^6.13.0",
     "@typescript-eslint/parser": "^6.13.0",
+    "esbuild": "^0.25.9",
     "eslint": "^8.54.0",
     "prettier": "^3.1.0",
+    "ts-node": "^10.9.1",
     "tsx": "^4.6.0",
     "typescript": "^5.3.2"
   },

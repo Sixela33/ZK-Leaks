@@ -4,6 +4,8 @@ import {
   HardenedSchema, 
   EmailVerificationSchema,
   OtpVerificationSchema,
+  ZKEmailProofSchema,
+  ZKEmailVerificationRequestSchema,
   normalizeTld, 
   validateTldForm, 
   containsAtSignDeep, 
@@ -11,15 +13,16 @@ import {
   sanitizeHardenedBody 
 } from './validation.js';
 import { OtpService } from './otp-service.js';
+import type { ZKEmailProof, ZKEmailVerificationRequest } from './types.js';
 
 export function createServer(): FastifyInstance {
   const fastify = Fastify({
     logger: false,
     trustProxy: true,
-    bodyLimit: 1024,
+    bodyLimit: 1024 * 1024, // 1MB para contenido de email
   });
 
-  fastify.addHook('onRequest', (request: FastifyRequest, reply: FastifyReply, done) => {
+  fastify.addHook('onRequest', (request: FastifyRequest, reply: FastifyReply, done: () => void) => {
     reply.header('Cache-Control', 'no-store');
     reply.header('Referrer-Policy', 'no-referrer');
     reply.header('X-Content-Type-Options', 'nosniff');
@@ -27,8 +30,8 @@ export function createServer(): FastifyInstance {
     done();
   });
 
-  fastify.addHook('preHandler', (request: FastifyRequest, reply: FastifyReply, done) => {
-    if (['/check-tld', '/request-otp', '/verify-otp'].includes(request.url)) {
+  fastify.addHook('preHandler', (request: FastifyRequest, reply: FastifyReply, done: () => void) => {
+    if (['/check-tld', '/request-otp', '/verify-otp', '/zk-verify-email', '/zk-verify-proof'].includes(request.url)) {
       if (request.method !== 'POST') {
         reply.status(405).send({ error: 'method_not_allowed' });
         return;
@@ -85,8 +88,7 @@ export function createServer(): FastifyInstance {
       reply.status(400).send({ error: 'invalid_request' });
     }
   });
-
-  // NUEVO: Endpoint para solicitar OTP
+  // Endpoints legacy (mantener compatibilidad)
   fastify.post('/request-otp', async (request: FastifyRequest, reply: FastifyReply) => {
     try {
       console.log('📧 Request body:', request.body);
@@ -115,7 +117,6 @@ export function createServer(): FastifyInstance {
     }
   });
 
-  // NUEVO: Endpoint para verificar OTP
   fastify.post('/verify-otp', async (request: FastifyRequest, reply: FastifyReply) => {
     try {
       const data = OtpVerificationSchema.parse(request.body);
@@ -148,7 +149,6 @@ export function createServer(): FastifyInstance {
     }
   });
 
-  // NUEVO: Endpoint para obtener TLD verificado
   fastify.get('/verified-tld/:sessionId', async (request: FastifyRequest, reply: FastifyReply) => {
     try {
       const { sessionId } = request.params as { sessionId: string };

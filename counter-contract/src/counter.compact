@@ -1,71 +1,3 @@
-<<<<<<< HEAD
-pragma language_version >= 0.16 && <= 0.17;
-
-import CompactStandardLibrary;
-import "./modules/Ownable" prefix Ownable_;
-
-export { ZswapCoinPublicKey, ContractAddress, Either }; // To use in TypeScript
-
-struct Leak {
-  id: Uint<64>,
-  uri: Opaque<"string">,
-  donation_addr: Opaque<"string">,
-  donated: Uint<64>
-}
-
-// Public state
-export ledger leaks: Map<Uint<64>, Leak>;
-export ledger nextLeakId: Counter;
-export ledger round: Counter;
-
-// Constructor
-constructor() {
-  Ownable_initialize(left<ZswapCoinPublicKey, ContractAddress>(ownPublicKey()));
-}
-
-// Create Leak
-export circuit createLeak(uri: Opaque<"string">, donation_addr: Opaque<"string">): [] {
-  const newLeak = Leak {
-    id: nextLeakId,
-    uri: disclose(uri),
-    donation_addr: disclose(donation_addr),
-    donated: 0
-  };
-  leaks.insert(nextLeakId, newLeak);
-  nextLeakId.increment(1);
-  round.increment(1);
-}
-
-// Get Leak by id
-export circuit getLeak(id: Uint<64>): Leak {
-  assert(leaks.member(disclose(id)), "Leak does not exist");
-  return leaks.lookup(disclose(id));
-}
-
-// Counter increment/decrement
-export circuit increment(): [] {
-  round.increment(1);
-}
-
-export circuit decrement(): [] {
-  round.decrement(1);
-}
-
-//
-// Ownable Circuits
-//
-
-export circuit owner(): Either<ZswapCoinPublicKey, ContractAddress> {
-  return Ownable_owner();
-}
-
-export circuit transferOwnership(newOwner: Either<ZswapCoinPublicKey, ContractAddress>): [] {
-  Ownable_transferOwnership(newOwner);
-}
-
-export circuit renounceOwnership(): [] {
-  Ownable_renounceOwnership();
-=======
 pragma language_version >= 0.16 && <= 0.17;
 
 import CompactStandardLibrary;
@@ -114,5 +46,4 @@ export circuit increment(): [] {
 
 export circuit decrement(): [] {
   round.decrement(1);
->>>>>>> e73012b (epa :D)
 }

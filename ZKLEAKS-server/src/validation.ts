@@ -14,6 +14,20 @@ export const OtpVerificationSchema = z.object({
   otp: z.string().length(6, 'OTP must be 6 digits').regex(/^\d{6}$/, 'OTP must contain only digits')
 }).strict();
 
+// Esquemas para ZK-email
+export const ZKEmailProofSchema = z.object({
+  proofData: z.string().min(1, 'Proof data is required'),
+  publicData: z.string().min(1, 'Public data is required'),
+  tld: z.string().min(1).max(253),
+  timestamp: z.number().positive(),
+  blueprintSlug: z.string().min(1, 'Blueprint slug is required')
+}).strict();
+
+export const ZKEmailVerificationRequestSchema = z.object({
+  emailContent: z.string().min(1, 'Email content is required'),
+  tld: z.string().min(1).max(253)
+}).strict();
+
 export function normalizeTld(input: string): string {
   return input.trim().toLowerCase().replace(/^\./, '');
 }

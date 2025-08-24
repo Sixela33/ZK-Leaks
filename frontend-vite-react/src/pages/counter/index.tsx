@@ -5,7 +5,7 @@ import { RefreshCw, PlusCircle, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { ModeToggle } from "@/components/mode-toggle";
-import type { Leak } from "@/modules/midnight/counter-ui/api/common-types";
+import PinataFileUpload from "@/components/pinataFileUpload";
 
 export const Counter = () => {
   const { deployedContractAPI, derivedState, onDeploy, providers } =
@@ -77,7 +77,6 @@ export const Counter = () => {
                   <span>Deploy New Contract</span>
                 </Button>
               </div>
-
               {deployedAddress && (
                 <div className="p-4 bg-muted rounded-lg">
                   <p className="text-sm font-medium text-muted-foreground mb-1">Deployed Contract</p>
@@ -147,6 +146,8 @@ export const Counter = () => {
                 <label htmlFor="leak-uri" className="block text-sm font-medium text-foreground mb-2">
                   Leak URI
                 </label>
+                {/**
+                 * 
                 <input
                   id="leak-uri"
                   type="text"
@@ -155,6 +156,10 @@ export const Counter = () => {
                   placeholder="Enter leak URI or content"
                   className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
                 />
+                */}
+
+                <PinataFileUpload onUploaded={(leakUri) => {setNewLeakUri(leakUri)}} title="" description=""/>
+
               </div>
               <div>
                 <label htmlFor="donation-addr" className="block text-sm font-medium text-foreground mb-2">
