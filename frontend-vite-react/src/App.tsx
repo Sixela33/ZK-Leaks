@@ -19,7 +19,7 @@ export const logger = pino.pino({
 setNetworkId(NetworkId.TestNet);
 // Update this with your deployed contract address
 const contractAddress =
-  "0200d0c87ec53375612a5fbeb3fe878428ffc13aa1f7ac18252014795343c229b7ff";
+  "02009d26b4f37afc5748919cf4ea6259f92c7cdbbb7a5876ccae8bb12210dcf09a3f";
 
 function App() {
   return (

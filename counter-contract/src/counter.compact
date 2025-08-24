@@ -1,6 +1,9 @@
 pragma language_version >= 0.16 && <= 0.17;
 
 import CompactStandardLibrary;
+import "./modules/Ownable" prefix Ownable_;
+
+export { ZswapCoinPublicKey, ContractAddress, Either }; // To use in TypeScript
 
 struct Leak {
   id: Uint<64>,
@@ -16,8 +19,7 @@ export ledger round: Counter;
 
 // Constructor
 constructor() {
-  // leaks = default<Set<Leak>>;
-  // nextLeakId = Counter(0);
+  Ownable_initialize(left<ZswapCoinPublicKey, ContractAddress>(ownPublicKey()));
 }
 
 // Create Leak
@@ -46,4 +48,20 @@ export circuit increment(): [] {
 
 export circuit decrement(): [] {
   round.decrement(1);
+}
+
+//
+// Ownable Circuits
+//
+
+export circuit owner(): Either<ZswapCoinPublicKey, ContractAddress> {
+  return Ownable_owner();
+}
+
+export circuit transferOwnership(newOwner: Either<ZswapCoinPublicKey, ContractAddress>): [] {
+  Ownable_transferOwnership(newOwner);
+}
+
+export circuit renounceOwnership(): [] {
+  Ownable_renounceOwnership();
 }
